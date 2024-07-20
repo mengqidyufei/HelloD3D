@@ -1,5 +1,7 @@
 #include <Windows.h>
 #include "WindowsMessageMap.h"
+#include <ostream>
+#include <sstream>
 
 LRESULT CALLBACK MyWndProc(HWND hWnd, UINT msg, WPARAM wParma, LPARAM lParam)
 {
@@ -12,15 +14,31 @@ LRESULT CALLBACK MyWndProc(HWND hWnd, UINT msg, WPARAM wParma, LPARAM lParam)
 		PostQuitMessage(69);
 		break;
 	case WM_KEYDOWN:
-		if (wParma == 'F')
+		if (wParma == 'Q')
 		{
-			SetWindowText(hWnd, L"Key F down.");
+			SetWindowText(hWnd, L"Hello D3D.");
 		}
 		break;
 	case WM_KEYUP:
-		if (wParma == 'F')
+		if (wParma == 'Q')
 		{
-			SetWindowText(hWnd, L"Key F up.");
+			SetWindowText(hWnd, L"Hello World.");
+		}
+		break;
+	case WM_CHAR:
+		// just text input;
+		{
+			static std::string title;
+			title.push_back((char)wParma);
+			SetWindowTextA(hWnd, title.c_str());
+		}
+		break;
+	case WM_LBUTTONDOWN:
+		{
+			POINTS pt = MAKEPOINTS(lParam);
+			std::ostringstream oss;
+			oss << "(" << pt.x << "," << pt.y << ")";
+			SetWindowTextA(hWnd, oss.str().c_str());
 		}
 		break;
 	}
@@ -64,7 +82,7 @@ int CALLBACK WinMain(
 	BOOL gResult;
 	while ((gResult = GetMessage(&msg, NULL, 0, 0)) > 0) {
 		//if (!TranslateAccelerator(hWnd, hAccelTable, &msg)) {
-			TranslateMessage(&msg);
+			TranslateMessage(&msg);		// WM_KEYDOWN translate to WM_CHAR, for text input
 			DispatchMessage(&msg);
 		//}
 	}
