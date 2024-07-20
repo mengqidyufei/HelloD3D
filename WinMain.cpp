@@ -1,10 +1,27 @@
 #include <Windows.h>
-LRESULT CALLBACK MyWndProc(HWND hWnd, UINT msg, WPARAM wParma, WPARAM lParam)
+#include "WindowsMessageMap.h"
+
+LRESULT CALLBACK MyWndProc(HWND hWnd, UINT msg, WPARAM wParma, LPARAM lParam)
 {
+	static WindowsMessageMap map;
+	std::string msgString = map(msg, lParam, wParma);
+	OutputDebugStringA(msgString.c_str());
 	switch (msg)
 	{
 	case WM_CLOSE:
 		PostQuitMessage(69);
+		break;
+	case WM_KEYDOWN:
+		if (wParma == 'F')
+		{
+			SetWindowText(hWnd, L"Key F down.");
+		}
+		break;
+	case WM_KEYUP:
+		if (wParma == 'F')
+		{
+			SetWindowText(hWnd, L"Key F up.");
+		}
 		break;
 	}
 	return DefWindowProc(hWnd, msg, wParma, lParam);
