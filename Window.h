@@ -3,6 +3,7 @@
 #include "ChiliException.h"
 #include "Keyboard.h"
 #include "Mouse.h"
+#include <optional>
 
 #define CHWND_EXCEPT(hr) Window::HrException(__LINE__, __FILE__, hr)
 #define CHWND_LAST_EXCEPT() Window::HrException(__LINE__, __FILE__, GetLastError())
@@ -15,6 +16,7 @@ public:
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
 	void setTitle(const char* text);
+	static std::optional<int> ProcessMessages();
 
 private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

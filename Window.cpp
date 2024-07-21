@@ -138,6 +138,20 @@ void Window::setTitle(const char*text)
 	}
 }
 
+std::optional<int> Window::ProcessMessages()
+{
+	MSG msg;
+	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+		if (msg.message == WM_QUIT)
+		{
+			return msg.wParam;
+		}
+		TranslateMessage(&msg);		// WM_KEYDOWN translate to WM_CHAR, for text input
+		DispatchMessage(&msg);
+	}
+	return std::optional<int>();
+}
+
 Window::WindowClass Window::WindowClass::wndClass;
 LPCWSTR Window::WindowClass::GetWndClassName() noexcept
 {
