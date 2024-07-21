@@ -73,7 +73,27 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	case WM_MOUSEMOVE:
 	{
 		POINTS pt = MAKEPOINTS(lParam);
-		mMouse.OnMouseMove(pt.x, pt.y);
+		if (pt.x >= 0 && pt.x < mWidth && pt.y >= 0 && pt.y < mHeight)
+		{
+			mMouse.OnMouseMove(pt.x, pt.y);
+			if (!mMouse.IsInWindow())
+			{
+				SetCapture(mWnd);
+				mMouse.OnMouseEnter();
+			}
+		}
+		else
+		{
+			if (wParam && (MK_LBUTTON | MK_RBUTTON))
+			{
+				mMouse.OnMouseMove(pt.x, pt.y);
+			}
+			else
+			{
+				ReleaseCapture();
+				mMouse.OnMouseLeave();
+			}
+		}
 	}
 		break;
 	case WM_LBUTTONDOWN:
@@ -103,14 +123,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	case WM_MOUSEWHEEL:
 	{
 		POINTS pt = MAKEPOINTS(lParam);
-		if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
-		{
-			mMouse.OnWheelUp(pt.x, pt.y);
-		}
-		else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0)
-		{
-			mMouse.OnWheelDown(pt.x, pt.y);
-		}
+		mMouse.OnWheelDelta(pt.x, pt.y, GET_WHEEL_DELTA_WPARAM(wParam));
 	}
 		break;
 	}
