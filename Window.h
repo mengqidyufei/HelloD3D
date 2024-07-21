@@ -2,6 +2,10 @@
 #include "ChiliWin.h"
 #include "ChiliException.h"
 #include "Keyboard.h"
+#include "Mouse.h"
+
+#define CHWND_EXCEPT(hr) Window::HrException(__LINE__, __FILE__, hr)
+#define CHWND_LAST_EXCEPT() Window::HrException(__LINE__, __FILE__, GetLastError())
 
 class Window
 {
@@ -10,6 +14,8 @@ public:
 	~Window();
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
+	void setTitle(const char* text);
+
 private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -17,6 +23,7 @@ private:
 
 public:
 	Keyboard mKeyboard;
+	Mouse mMouse;
 
 private:
 	int mWidth;
@@ -64,6 +71,3 @@ private:
 		HINSTANCE mInstance;
 	};
 };
-
-#define CHWND_EXCEPT(hr) Window::HrException(__LINE__, __FILE__, hr)
-#define CHWND_LAST_EXCEPT() Window::HrException(__LINE__, __FILE__, GetLastError())

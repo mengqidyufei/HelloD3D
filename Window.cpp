@@ -7,6 +7,8 @@
 Window::Window(int width, int height, LPCWSTR name)
 	: mWidth(width)
 	, mHeight(height)
+	, mMouse(Mouse())
+	, mKeyboard(Keyboard())
 {
 	// window size
 	RECT rect;
@@ -68,8 +70,59 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	case WM_CHAR:
 		mKeyboard.OnChar(static_cast<unsigned char>(wParam));
 		break;
+	case WM_MOUSEMOVE:
+	{
+		POINTS pt = MAKEPOINTS(lParam);
+		mMouse.OnMouseMove(pt.x, pt.y);
+	}
+		break;
+	case WM_LBUTTONDOWN:
+	{
+		POINTS pt = MAKEPOINTS(lParam);
+		mMouse.OnLeftPressed(pt.x, pt.y);
+	}
+	break;
+	case WM_RBUTTONDOWN:
+	{
+		POINTS pt = MAKEPOINTS(lParam);
+		mMouse.OnRightPressed(pt.x, pt.y);
+	}
+	break;
+	case WM_LBUTTONUP:
+	{
+		POINTS pt = MAKEPOINTS(lParam);
+		mMouse.OnLeftReleased(pt.x, pt.y);
+	}
+	break;
+	case WM_RBUTTONUP:
+	{
+		POINTS pt = MAKEPOINTS(lParam);
+		mMouse.OnRightReleased(pt.x, pt.y);
+	}
+	break;
+	case WM_MOUSEWHEEL:
+	{
+		POINTS pt = MAKEPOINTS(lParam);
+		if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
+		{
+			mMouse.OnWheelUp(pt.x, pt.y);
+		}
+		else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0)
+		{
+			mMouse.OnWheelDown(pt.x, pt.y);
+		}
+	}
+		break;
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
+}
+
+void Window::setTitle(const char*text)
+{
+	if (false == SetWindowTextA(mWnd, text))
+	{
+		throw CHWND_LAST_EXCEPT();
+	}
 }
 
 Window::WindowClass Window::WindowClass::wndClass;
@@ -116,7 +169,7 @@ LRESULT WINAPI Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 	{
 		const CREATESTRUCTW* const pCreate = reinterpret_cast<CREATESTRUCTW*>(lParam);
 		Window* const pWnd = static_cast<Window*>(pCreate->lpCreateParams);
-		SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(hWnd));	// 类似于 setUserData
+		SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWnd));	// 类似于 setUserData
 		SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Window::HandleMsgThunk));	// 传递给HandleMsgThunk
 		return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
 	}
