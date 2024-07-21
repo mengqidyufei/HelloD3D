@@ -2,9 +2,9 @@ D3D中的实体：着色器、纹理、状态、......这些物体的parent都�
 
 Device
 	|-SwapChain		// 交换链
-	|		|-Texture		// 前缓冲区
+	|		|-FrontBuffer(Texture)		// 前缓冲区（扫描缓冲区，发送给显示器显示的，自动生成的，不用负责）
+	|		|-BackBuffer(Texture)		// 后缓冲区（实际绘制的缓冲区）
 	|			|-RenderTargetView		// 渲染目标视图，将其绑定到渲染管线上，承担所有的绘制工作
-	|		|-Texture		// 后缓冲区（实际绘制的缓冲区）
 	|
 	|-Buffer		// 顶点缓存
 	|	|-View
@@ -35,3 +35,10 @@ Flip：本质和重命名一样，将前后缓冲区名字互换。 取决于硬
 撕裂：前缓冲区被扫描了一半，此时被Flip，那么显示器此时就会显示Flip之前的上一半，和Flip之后的下一半。 解决办法就是必须在扫描完一帧后才能Flip；
 跳帧：绘制一帧的时间比扫描一帧的时间更长，解决办法：再添加一个缓冲区在一定程度上可以缓解。（三重缓冲）但是这样会让延迟加大。
 缓冲区也是一种纹理，可以在该纹理上调用函数创建RenderTargetView并渲染；
+
+
+初始化步骤：
+1、创建Device，SwapChain，Context； 需要注意的是SwapChainDesc中需要指定的BackBuffer数量以及用途
+2、SwapChain->Present(1, 0);	// 交换前后缓冲区，以便于能看到画面，第一个参数是间隔时间，1代表60帧，2代表30帧；第二个参数Flag需要看MSDN，默认0；
+3、创建RenderTargetView：SwapChain得到BackBuffer，根据BackBuffer由Device创建RenderTargetView，拿完View之后记得把获取的BackBuffer释放掉
+4、拿到RenderTargetView之后，就可以开始在View上绘制了，其中clearRenderTargetView可以清空绘制区域并附上颜色(MSDN解释：将渲染目标中的所有元素设置为一个值。)
