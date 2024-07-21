@@ -1,4 +1,5 @@
 #include "Graphics.h"
+#include "ChiliException.h"
 
 Graphics::Graphics(HWND hWnd)
 {
@@ -21,11 +22,13 @@ Graphics::Graphics(HWND hWnd)
 	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;	// 交换效果
 	sd.Flags = 0;
 
-	D3D11CreateDeviceAndSwapChain(
+	UINT swapCreateFlags = D3D11_CREATE_DEVICE_DEBUG;
+
+	HRESULT hr = D3D11CreateDeviceAndSwapChain(
 		nullptr,
 		D3D_DRIVER_TYPE_HARDWARE,
 		nullptr,
-		0,
+		swapCreateFlags,
 		nullptr,
 		0,
 		D3D11_SDK_VERSION,
@@ -35,11 +38,15 @@ Graphics::Graphics(HWND hWnd)
 		nullptr,
 		&mContext
 	);
+	if (hr != HRESULT())
+	{
+		GFX_THROW_INFO(hr);
+	}
 
 	// 得到后缓冲区（纹理，索引是0）然后创建渲染目标视图，有了RenderTargetView之后，就不需要后缓冲区了
 	ID3D11Resource* BackBUffer = nullptr;
-	mSwapChain->GetBuffer(0, __uuidof(ID3D11Resource), reinterpret_cast<void**>(&BackBUffer));
-	mDevice->CreateRenderTargetView(BackBUffer, nullptr, &mRenderTargetView);
+	GFX_THROW_INFO(mSwapChain->GetBuffer(0, __uuidof(ID3D11Resource), reinterpret_cast<void**>(&BackBUffer)));
+	GFX_THROW_INFO(mDevice->CreateRenderTargetView(BackBUffer, nullptr, &mRenderTargetView));
 	BackBUffer->Release();
 }
 
@@ -57,7 +64,19 @@ Graphics::~Graphics()
 
 void Graphics::endFrame()
 {
-	mSwapChain->Present(1, 0);
+	HRESULT hr = mSwapChain->Present(1, 0);
+	if (hr != 0)
+	{
+		infoManager.reset();
+		if (hr == DXGI_ERROR_DEVICE_REMOVED)
+		{
+			throw GFX_DEVICE_REMOVED_EXCEPT(mDevice->GetDeviceRemovedReason());
+		}
+		else
+		{
+			throw GFX_EXCEPT(hr);
+		}
+	}
 }
 
 void Graphics::clearRenderTargetView(float red, float green, float blue) noexcept

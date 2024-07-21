@@ -161,6 +161,7 @@
     <ClCompile Include="App/Window.cpp" />
     <ClCompile Include="ChiliTools/WindowsMessageMap.cpp" />
     <ClCompile Include="App/WinMain.cpp" />
+    <ClCompile Include="ChiliTools\DxgiInfoManager.cpp" />
     <ClCompile Include="Render/Graphics.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +173,8 @@
     <ClInclude Include="ChiliTools/Mouse.h" />
     <ClInclude Include="App/Window.h" />
     <ClInclude Include="ChiliTools/WindowsMessageMap.h" />
+    <ClInclude Include="ChiliTools\ChiliWRL.h" />
+    <ClInclude Include="ChiliTools\DxgiInfoManager.h" />
     <ClInclude Include="Render/Graphics.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>

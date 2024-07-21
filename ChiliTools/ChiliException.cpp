@@ -87,7 +87,26 @@ HrException::HrException(int line, const char* file, HRESULT hr) noexcept
 	:
 	Exception(line, file),
 	hr(hr)
-{}
+{
+}
+
+HrException::HrException(int line, const char* file, HRESULT hr, std::vector<std::string> infos) noexcept
+	:
+	Exception(line, file),
+	hr(hr)
+{
+	// join all info messages with newlines into single string
+	for (const auto& m : infos)
+	{
+		info += m;
+		info.push_back('\n');
+	}
+	// remove final newline if exists
+	if (!info.empty())
+	{
+		info.pop_back();
+	}
+}
 
 const char* HrException::what() const noexcept
 {
@@ -95,8 +114,12 @@ const char* HrException::what() const noexcept
 	oss << GetType() << std::endl
 		<< "[Error Code] 0x" << std::hex << std::uppercase << GetErrorCode()
 		<< std::dec << " (" << (unsigned long)GetErrorCode() << ")" << std::endl
-		<< "[Description] " << GetErrorDescription() << std::endl
-		<< GetOriginString();
+		<< "[Description] " << GetErrorDescription() << std::endl;
+	if (!info.empty())
+	{
+		oss << "\n[Error Info]\n" << GetErrorInfo() << std::endl << std::endl;
+	}
+	oss << GetOriginString();
 	whatBuffer = oss.str();
 	return whatBuffer.c_str();
 }
@@ -116,8 +139,56 @@ std::string HrException::GetErrorDescription() const noexcept
 	return Exception::TranslateErrorCode(hr);
 }
 
+std::string HrException::GetErrorInfo() const noexcept
+{
+	return info;
+}
+
 
 const char* NoGfxException::GetType() const noexcept
 {
 	return "Chili Window Exception [No Graphics]";
+}
+
+const char* DeviceRemovedException::GetType() const noexcept
+{
+	return "Chili Graphics Exception [Device Removed]";
+}
+
+InfoException::InfoException(int line, const char* file, std::vector<std::string> infoMsgs) noexcept
+	:
+	Exception(line, file)
+{
+	// join all info messages with newlines into single string
+	for (const auto& m : infoMsgs)
+	{
+		info += m;
+		info.push_back('\n');
+	}
+	// remove final newline if exists
+	if (!info.empty())
+	{
+		info.pop_back();
+	}
+}
+
+
+const char* InfoException::what() const noexcept
+{
+	std::ostringstream oss;
+	oss << GetType() << std::endl
+		<< "\n[Error Info]\n" << GetErrorInfo() << std::endl << std::endl;
+	oss << GetOriginString();
+	whatBuffer = oss.str();
+	return whatBuffer.c_str();
+}
+
+const char* InfoException::GetType() const noexcept
+{
+	return "Chili Graphics Info Exception";
+}
+
+std::string InfoException::GetErrorInfo() const noexcept
+{
+	return info;
 }

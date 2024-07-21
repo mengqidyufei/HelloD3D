@@ -42,7 +42,10 @@ Window::~Window()
 
 Graphics& Window::getGraphics()
 {
-	// TODO: insert return statement here
+	if (nullptr == mGraphics)
+	{
+		throw NO_GFX_EXCEPT();
+	}
 	return *mGraphics;
 }
 

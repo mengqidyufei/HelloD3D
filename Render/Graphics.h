@@ -1,5 +1,6 @@
 #pragma once
 #include "ChiliWin.h"
+#include "DxgiInfoManager.h"
 #include <d3d11.h>
 
 class Graphics
@@ -18,5 +19,6 @@ private:
 	IDXGISwapChain* mSwapChain = nullptr;
 	ID3D11DeviceContext* mContext = nullptr;
 	ID3D11RenderTargetView* mRenderTargetView = nullptr;
+	DxgiInfoManager infoManager;
 };
 
