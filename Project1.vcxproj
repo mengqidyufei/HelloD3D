@@ -125,6 +125,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir);App;ChiliTools;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -140,6 +141,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir);App;ChiliTools;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -149,25 +151,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="App.cpp" />
-    <ClCompile Include="ChiliException.cpp" />
-    <ClCompile Include="ChiliTimer.cpp" />
-    <ClCompile Include="Keyboard.cpp" />
-    <ClCompile Include="Mouse.cpp" />
-    <ClCompile Include="Window.cpp" />
-    <ClCompile Include="WindowsMessageMap.cpp" />
-    <ClCompile Include="WinMain.cpp" />
+    <ClCompile Include="App/App.cpp" />
+    <ClCompile Include="ChiliTools/ChiliException.cpp" />
+    <ClCompile Include="ChiliTools/ChiliTimer.cpp" />
+    <ClCompile Include="ChiliTools/Keyboard.cpp" />
+    <ClCompile Include="ChiliTools/Mouse.cpp" />
+    <ClCompile Include="App/Window.cpp" />
+    <ClCompile Include="ChiliTools/WindowsMessageMap.cpp" />
+    <ClCompile Include="App/WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="App.h" />
-    <ClInclude Include="ChiliException.h" />
-    <ClInclude Include="ChiliTimer.h" />
-    <ClInclude Include="ChiliWin.h" />
-    <ClInclude Include="Keyboard.h" />
-    <ClInclude Include="Mouse.h" />
+    <ClInclude Include="App/App.h" />
+    <ClInclude Include="ChiliTools/ChiliException.h" />
+    <ClInclude Include="ChiliTools/ChiliTimer.h" />
+    <ClInclude Include="ChiliTools/ChiliWin.h" />
+    <ClInclude Include="ChiliTools/Keyboard.h" />
+    <ClInclude Include="ChiliTools/Mouse.h" />
+    <ClInclude Include="App/Window.h" />
+    <ClInclude Include="ChiliTools/WindowsMessageMap.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="Window.h" />
-    <ClInclude Include="WindowsMessageMap.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project1.rc" />
