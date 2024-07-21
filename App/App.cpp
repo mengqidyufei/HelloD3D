@@ -22,8 +22,8 @@ int App::init()
 
 void App::doFrame()
 {
-	const float timer = mTimer.Peek();
-	std::ostringstream oss;
-	oss << "Timer elapsed:" << std::setprecision(1) << std::fixed << timer << "s";
-	mWnd.setTitle(oss.str().c_str());
+	const float color = sin(mTimer.Peek()) / 2.0f + 0.5f;
+	//mWnd.getGraphics().clearRenderTargetView(255, 0, 0);
+	mWnd.getGraphics().clearRenderTargetView(color, color, 1.0f);
+	mWnd.getGraphics().endFrame();
 }

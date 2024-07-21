@@ -32,12 +32,18 @@ Window::Window(int width, int height, LPCWSTR name)
 		throw CHWND_LAST_EXCEPT();
 	}
 	ShowWindow(mWnd, SW_SHOWDEFAULT);
-	UpdateWindow(mWnd);          // »æÖÆ´°¿Ú
+	mGraphics = std::make_unique<Graphics>(mWnd);
 }
 
 Window::~Window()
 {
 	DestroyWindow(mWnd);
+}
+
+Graphics& Window::getGraphics()
+{
+	// TODO: insert return statement here
+	return *mGraphics;
 }
 
 void Window::setTitle(const char*text)

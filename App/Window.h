@@ -3,7 +3,9 @@
 #include "ChiliException.h"
 #include "Keyboard.h"
 #include "Mouse.h"
+#include "Graphics.h"
 #include <optional>
+#include <memory>
 
 class Window
 {
@@ -12,6 +14,8 @@ public:
 	~Window();
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
+
+	Graphics& getGraphics();
 	void setTitle(const char* text);
 	static std::optional<int> ProcessMessages();
 
@@ -28,6 +32,7 @@ private:
 	int mWidth;
 	int mHeight;
 	HWND mWnd;
+	std::unique_ptr<Graphics> mGraphics;
 
 private:
 	class WindowClass
