@@ -1,9 +1,28 @@
 #pragma once
 #include "ChiliWin.h"
 #include "ChiliException.h"
+#include "Keyboard.h"
 
 class Window
 {
+public:
+	Window(int width, int height, LPCWSTR name);
+	~Window();
+	Window(const Window&) = delete;
+	Window& operator=(const Window&) = delete;
+private:
+	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
+
+public:
+	Keyboard mKeyboard;
+
+private:
+	int mWidth;
+	int mHeight;
+	HWND mWnd;
+
 public:
 	class Exception : public ChiliException
 	{
@@ -44,19 +63,6 @@ private:
 		static WindowClass wndClass;
 		HINSTANCE mInstance;
 	};
-public:
-	Window(int width, int height, LPCWSTR name);
-	~Window();
-	Window(const Window&) = delete;
-	Window& operator=(const Window&) = delete;
-private:
-	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-	LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
-private:
-	int mWidth;
-	int mHeight;
-	HWND mWnd;
 };
 
 #define CHWND_EXCEPT(hr) Window::HrException(__LINE__, __FILE__, hr)

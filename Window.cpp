@@ -4,6 +4,74 @@
 #include <ostream>
 #include <sstream>
 
+Window::Window(int width, int height, LPCWSTR name)
+	: mWidth(width)
+	, mHeight(height)
+{
+	// window size
+	RECT rect;
+	rect.left = 100;
+	rect.right = width + rect.left;
+	rect.top = 100;
+	rect.bottom = height + rect.top;
+	if (false == AdjustWindowRect(&rect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE))
+	{
+		throw CHWND_LAST_EXCEPT();
+	}
+	// create and show window
+	mWnd = CreateWindow(
+		WindowClass::GetWndClassName(), name,
+		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
+		CW_USEDEFAULT, CW_USEDEFAULT, rect.right - rect.left, rect.bottom - rect.top,
+		nullptr, nullptr, WindowClass::GetInstance(), this
+	);		// this: 使得Window此窗口实例与HandleMsgSetup绑定，可以在静态函数中cast lParam指针访问此窗口
+	if (nullptr == mWnd)
+	{
+		throw CHWND_LAST_EXCEPT();
+	}
+	ShowWindow(mWnd, SW_SHOWDEFAULT);
+	UpdateWindow(mWnd);          // 绘制窗口
+}
+
+Window::~Window()
+{
+	DestroyWindow(mWnd);
+}
+
+// 真正处理消息的函数：
+LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
+{
+	static WindowsMessageMap map;
+	std::string msgString = map(msg, lParam, wParam);
+	//OutputDebugStringA(msgString.c_str());
+	switch (msg)
+	{
+	case WM_CLOSE:
+		//PostQuitMessage(69);		// 直接退出程序
+		//break;
+		PostQuitMessage(0);			// 走析构函数
+		return 0;					// 不走默认的关闭窗口DefWindowProc
+	case WM_KILLFOCUS:
+		mKeyboard.ClearState();		// 当弹窗后，键盘焦点不在主窗口就清空键盘所有状态
+		break;
+	case WM_KEYDOWN:
+		// Alt key is WM_SYSKEYDOWN / WM_SYSKEYUP
+		// 0x4000-0000: MSDN上查WM_KEYDOWN的lParam解释，处理持续按下某个键后，只有第30位可变化，比如加速前进Shift+W
+		if (!(lParam & 0x40000000) || mKeyboard.AutorepeatIsEnabled())
+		{
+			mKeyboard.OnKeyPressed(static_cast<unsigned char>(wParam));
+		}
+		break;
+	case WM_KEYUP:
+		mKeyboard.OnKeyReleased(static_cast<unsigned char>(wParam));
+		break;
+	case WM_CHAR:
+		mKeyboard.OnChar(static_cast<unsigned char>(wParam));
+		break;
+	}
+	return DefWindowProc(hWnd, msg, wParam, lParam);
+}
+
 Window::WindowClass Window::WindowClass::wndClass;
 LPCWSTR Window::WindowClass::GetWndClassName() noexcept
 {
@@ -40,40 +108,6 @@ Window::WindowClass::~WindowClass()
 	UnregisterClass(wndClassName, mInstance);
 }
 
-Window::Window(int width, int height, LPCWSTR name)
-	: mWidth(width)
-	, mHeight(height)
-{
-	// window size
-	RECT rect;
-	rect.left = 100;
-	rect.right = width + rect.left;
-	rect.top = 100;
-	rect.bottom = height + rect.top;
-	if (false == AdjustWindowRect(&rect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE))
-	{
-		throw CHWND_LAST_EXCEPT();
-	}
-	// create and show window
-	mWnd = CreateWindow(
-		WindowClass::GetWndClassName(), name,
-		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
-		CW_USEDEFAULT, CW_USEDEFAULT, rect.right - rect.left, rect.bottom - rect.top,
-		nullptr, nullptr, WindowClass::GetInstance(), this
-	);		// this: 使得Window此窗口实例与HandleMsgSetup绑定，可以在静态函数中cast lParam指针访问此窗口
-	if (nullptr == mWnd)
-	{
-		throw CHWND_LAST_EXCEPT();
-	}
-	ShowWindow(mWnd, SW_SHOWDEFAULT);
-	UpdateWindow(mWnd);          // 绘制窗口
-}
-
-Window::~Window()
-{
-	DestroyWindow(mWnd);
-}
-
 LRESULT WINAPI Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
@@ -94,23 +128,6 @@ LRESULT WINAPI Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 {
 	Window* const pWnd = reinterpret_cast<Window*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));	// 类似于 getUserData
 	return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
-}
-
-// 真正处理消息的函数：
-LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
-{
-	static WindowsMessageMap map;
-	std::string msgString = map(msg, lParam, wParam);
-	//OutputDebugStringA(msgString.c_str());
-	switch (msg)
-	{
-	case WM_CLOSE:
-		//PostQuitMessage(69);		// 直接退出程序
-		//break;
-		PostQuitMessage(0);			// 走析构函数
-		return 0;					// 不走默认的关闭窗口DefWindowProc
-	}
-	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
 // Window Exception Stuff
