@@ -2,6 +2,8 @@
 #include "ChiliWin.h"
 #include "DxgiInfoManager.h"
 #include <d3d11.h>
+#include <wrl.h>
+namespace wrl = Microsoft::WRL;
 
 class Graphics
 {
@@ -15,10 +17,10 @@ public:
 	void clearRenderTargetView(float red, float green, float blue) noexcept;
 
 private:
-	ID3D11Device* mDevice = nullptr;
-	IDXGISwapChain* mSwapChain = nullptr;
-	ID3D11DeviceContext* mContext = nullptr;
-	ID3D11RenderTargetView* mRenderTargetView = nullptr;
+	wrl::ComPtr<ID3D11Device> mDevice;
+	wrl::ComPtr<IDXGISwapChain> mSwapChain;
+	wrl::ComPtr<ID3D11DeviceContext> mContext;
+	wrl::ComPtr<ID3D11RenderTargetView> mRenderTargetView;
 	DxgiInfoManager infoManager;
 };
 

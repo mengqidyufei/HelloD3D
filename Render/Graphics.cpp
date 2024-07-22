@@ -44,22 +44,13 @@ Graphics::Graphics(HWND hWnd)
 	}
 
 	// 得到后缓冲区（纹理，索引是0）然后创建渲染目标视图，有了RenderTargetView之后，就不需要后缓冲区了
-	ID3D11Resource* BackBUffer = nullptr;
-	GFX_THROW_INFO(mSwapChain->GetBuffer(0, __uuidof(ID3D11Resource), reinterpret_cast<void**>(&BackBUffer)));
-	GFX_THROW_INFO(mDevice->CreateRenderTargetView(BackBUffer, nullptr, &mRenderTargetView));
-	BackBUffer->Release();
+	wrl::ComPtr<ID3D11Resource> BackBUffer;
+	GFX_THROW_INFO(mSwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &BackBUffer));
+	GFX_THROW_INFO(mDevice->CreateRenderTargetView(BackBUffer.Get(), nullptr, &mRenderTargetView));
 }
 
 Graphics::~Graphics()
 {
-	if (mDevice)
-		mDevice->Release();
-	if (mSwapChain)
-		mSwapChain->Release();
-	if (mContext)
-		mContext->Release();
-	if (mRenderTargetView)
-		mRenderTargetView->Release();
 }
 
 void Graphics::endFrame()
@@ -82,5 +73,5 @@ void Graphics::endFrame()
 void Graphics::clearRenderTargetView(float red, float green, float blue) noexcept
 {
 	const float color[] = { red, green, blue, 1.0f };
-	mContext->ClearRenderTargetView(mRenderTargetView, color);
+	mContext->ClearRenderTargetView(mRenderTargetView.Get(), color);
 }
