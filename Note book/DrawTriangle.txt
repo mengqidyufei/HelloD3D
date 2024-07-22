@@ -1,0 +1,62 @@
+渲染管线（基础版）：
+Input Assembler (IA 输入装配)
+		|- IndexBuffers
+		|- VertexBuffers
+		|
+		|
+Vertex Shader (VS 顶点着色器)
+		|- Shader Resources and Constant Buffers
+		|
+		|
+Rasterizer（RS 光栅化）
+		|
+		|
+Pixel Shader (PS 像素着色器)
+		|- Unordered Access Resources
+		|
+		|
+Output Manager (OM 输出合并)
+		|
+		|
+	Render Targets
+
+只有 VS 和 PS 是可编程的，其余的IA RS OM都只是提供了有限的设置
+个人理解步骤：
+	1、需要准备好顶点数据
+	2、图元拓扑，就是告诉显卡需要基础图元，包括点、线、线集、独立三角形，三角形集
+	3、需要通过InputLayout把顶点数据传入VS的参数中，参数类型必须一致
+	4、绑定VS告诉渲染管线绘制顶点
+	5、显卡会负责光栅化
+	6、绑定PS告诉显卡每个像素上绘制颜色
+	7、输出到RenderTargetView上
+	8、坐标系转换NDC->viewport
+
+
+
+HLSL(着色器文件)
+它只是一个函数，有输入，有输出；
+
+编译库是 D3DCompiler.lib
+头文件是 #include <d3dcompiler.h>
+
+入口函数名称是main(可以在该文件的属性中进行自定义设置);
+加载着色器文件步骤：
+ 	加载的静态函数：D3DReadFileToBlob(fileName, ID3DBlob*);  // 需要关心fileName的输出路径，保证能读到字节码中；
+ 	创建VS：pDevice->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &vertexShader);
+ 	将VS绑定到渲染管线上：mContext->VSSetShader(vertexShader.Get(), 0, 0);
+
+
+VertexShader.hlsl：
+float4 main( float2 pos : POSITION ) : SV_POSITION
+{
+	return float4(pos.x, pos.y, 0.0f, 1.0f);
+}
+首先顶点着色器需要输出一个顶点的位置，以便可以在屏幕上栅格化该位置；其次必须是齐次坐标，所以必须是四维向量；
+:POSITION被称作输入语义(可以自定义名称，但必须与inputLayout中的第一个参数一致) :SV_POSITION被称作输出语义(SystemValue_POSITION不可以自定义名称)
+
+PixelShader.hlsl:
+float4 main() : SV_TARGET
+{
+	return float4(1.0f, 1.0f, 1.0f, 1.0f);
+}
+只有一个输出，代表颜色，四维向量；

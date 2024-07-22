@@ -25,5 +25,6 @@ void App::doFrame()
 	const float color = sin(mTimer.Peek()) / 2.0f + 0.5f;
 	//mWnd.getGraphics().clearRenderTargetView(255, 0, 0);
 	mWnd.getGraphics().clearRenderTargetView(color, color, 1.0f);
+	mWnd.getGraphics().drawTriangle();
 	mWnd.getGraphics().endFrame();
 }
