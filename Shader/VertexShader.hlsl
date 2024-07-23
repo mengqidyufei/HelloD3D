@@ -6,7 +6,7 @@ struct VS_OUTPUT
 
 cbuffer CBUF
 {
-	matrix rotationZ;
+	row_major matrix rotationZ;
 };
 
 VS_OUTPUT main(float2 pos : POSITION, float3 color : Color)

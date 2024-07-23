@@ -177,14 +177,15 @@ void Graphics::drawTriangle(float angle)
 		const ConstantBuffer cb =
 		{
 			// 此矩阵是绕Z轴旋转
+			// 窗口大小是800*600，所以X轴 *（3/4)，这样在旋转时不会收到挤压
 			{
-				std::cos(angle),	std::sin(angle), 0.0f, 0.0f,
-				-std::sin(angle),	std::cos(angle), 0.0f, 0.0f,
+				(3.0 / 4.0) * std::cos(angle),	std::sin(angle), 0.0f, 0.0f,
+				(3.0 / 4.0) * -std::sin(angle),	std::cos(angle), 0.0f, 0.0f,
 				0.0f,				0.0f,			 1.0f, 0.0f,
 				0.0f,				0.0f,			 0.0f, 1.0f,
 			}
 		};
-		// 设置Buffer类型为顶点索引，以及步进量
+		// 设置Buffer类型为常数缓存，以及Usage, Flags
 		D3D11_BUFFER_DESC descConstantBuffer = {};
 		descConstantBuffer.ByteWidth = sizeof(cb);
 		descConstantBuffer.Usage = D3D11_USAGE_DYNAMIC;		// 每帧都需要根据CPU传进来的angle更新矩阵
