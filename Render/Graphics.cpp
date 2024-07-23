@@ -84,12 +84,17 @@ void Graphics::drawTriangle()
 	{
 		float x;
 		float y;
+
+		unsigned char r;
+		unsigned char g;
+		unsigned char b;
+		unsigned char a;
 	};
 	const Vertex vertices[] =
 	{
-		{ 0.0f, 0.5f },
-		{ 0.5f, -0.5f },
-		{ -0.5f, -0.5f },
+		{ 0.0f, 0.5f, 255, 0, 0 },
+		{ 0.5f, -0.5f, 0, 255, 0 },
+		{ -0.5f, -0.5f, 0, 0, 255 },
 	};
 	// 描述Buffer是干什么用的
 	D3D11_BUFFER_DESC desc;				
@@ -133,6 +138,7 @@ void Graphics::drawTriangle()
 	const D3D11_INPUT_ELEMENT_DESC inputDesc[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 8, D3D11_INPUT_PER_VERTEX_DATA, 0},		// 8: 2个float
 	};
 	mDevice->CreateInputLayout(inputDesc, (UINT)std::size(inputDesc), blobVS->GetBufferPointer(), blobVS->GetBufferSize(), &inputLayout);
 	mContext->IASetInputLayout(inputLayout.Get());
@@ -162,5 +168,5 @@ void Graphics::drawTriangle()
 	viewport.MaxDepth = 1;
 	mContext->RSSetViewports(1u, &viewport);
 	//GFX_THROW_INFO_ONLY(mContext->Draw(3u, 0u));
-	mContext->Draw(3u, 0u);
+	mContext->Draw((UINT)std::size(vertices), 0u);
 }
