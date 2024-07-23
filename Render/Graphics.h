@@ -15,7 +15,7 @@ public:
 
 	void endFrame();	// 将后缓冲区画面翻转给前缓冲区
 	void clearRenderTargetView(float red, float green, float blue) noexcept;
-	void drawTriangle();
+	void drawTriangle(float angle);
 
 private:
 	wrl::ComPtr<ID3D11Device> mDevice;

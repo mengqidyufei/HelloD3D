@@ -1,6 +1,7 @@
 #include "Graphics.h"
 #include "ChiliException.h"
 #include <d3dcompiler.h>
+#include <cmath>
 
 Graphics::Graphics(HWND hWnd)
 {
@@ -77,7 +78,7 @@ void Graphics::clearRenderTargetView(float red, float green, float blue) noexcep
 	mContext->ClearRenderTargetView(mRenderTargetView.Get(), color);
 }
 
-void Graphics::drawTriangle()
+void Graphics::drawTriangle(float angle)
 {
 	// 准备一组数据
 	struct Vertex
@@ -117,18 +118,15 @@ void Graphics::drawTriangle()
 		descVertex.CPUAccessFlags = 0u;
 		descVertex.MiscFlags = 0u;
 		descVertex.StructureByteStride = sizeof(Vertex);
-
 		// 真正输入给Buffer的数据
 		D3D11_SUBRESOURCE_DATA subDataVertex;		
 		subDataVertex.pSysMem = vertices;
 		subDataVertex.SysMemPitch = 0u;
 		subDataVertex.SysMemSlicePitch = 0u;
-
 		// 创建ID3D11Buffer
 		wrl::ComPtr<ID3D11Buffer> vertexBuffer;
 		HRESULT hr;
 		GFX_THROW_INFO( mDevice->CreateBuffer(&descVertex, &subDataVertex, &vertexBuffer) );
-
 		// 设置输入装配器
 		UINT pStrides = sizeof(Vertex);
 		UINT offset = 0u;
@@ -137,38 +135,79 @@ void Graphics::drawTriangle()
 		mContext->IASetVertexBuffers(0u, 1u, vertexBuffer.GetAddressOf(), &pStrides, &offset);
 	}
 
-	// 顶点索引
-	const unsigned short indices[] =
+	
+		// 顶点索引
+		const unsigned short indices[] =
+		{
+			0, 1, 2,
+			0, 2, 3,
+			0, 4, 1,
+			5, 2, 1,
+		};
 	{
-		0, 1, 2,
-		0, 2, 3,
-		0, 4, 1,
-		5, 2, 1,
-	};
-	// 设置Buffer类型为顶点索引，以及步进量
-	D3D11_BUFFER_DESC descIndexBuffer = {};
-	descIndexBuffer.ByteWidth = sizeof(indices);
-	descIndexBuffer.Usage = D3D11_USAGE_DEFAULT;
-	descIndexBuffer.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	descIndexBuffer.CPUAccessFlags = 0u;
-	descIndexBuffer.MiscFlags = 0u;
-	descIndexBuffer.StructureByteStride = sizeof(unsigned short);
+		// 设置Buffer类型为顶点索引，以及步进量
+		D3D11_BUFFER_DESC descIndexBuffer = {};
+		descIndexBuffer.ByteWidth = sizeof(indices);
+		descIndexBuffer.Usage = D3D11_USAGE_DEFAULT;
+		descIndexBuffer.BindFlags = D3D11_BIND_INDEX_BUFFER;
+		descIndexBuffer.CPUAccessFlags = 0u;
+		descIndexBuffer.MiscFlags = 0u;
+		descIndexBuffer.StructureByteStride = sizeof(unsigned short);
+		// 真正输入给Buffer的数据
+		D3D11_SUBRESOURCE_DATA subDataIndexBuffer = {};
+		subDataIndexBuffer.pSysMem = indices;
+		subDataIndexBuffer.SysMemPitch = 0u;
+		subDataIndexBuffer.SysMemSlicePitch = 0u;
+		// 创建ID3D11Buffer
+		wrl::ComPtr<ID3D11Buffer> vertexIndexBuffer;
+		HRESULT hr;
+		GFX_THROW_INFO(mDevice->CreateBuffer(&descIndexBuffer, &subDataIndexBuffer, &vertexIndexBuffer));
+		mContext->IASetIndexBuffer(vertexIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
+	}
 
-	// 真正输入给Buffer的数据
-	D3D11_SUBRESOURCE_DATA subDataIndexBuffer = {};
-	subDataIndexBuffer.pSysMem = indices;
-	subDataIndexBuffer.SysMemPitch = 0u;
-	subDataIndexBuffer.SysMemSlicePitch = 0u;
-
-	// 创建ID3D11Buffer
-	wrl::ComPtr<ID3D11Buffer> vertexIndexBuffer;
-	HRESULT hr;
-	GFX_THROW_INFO(mDevice->CreateBuffer(&descIndexBuffer, &subDataIndexBuffer, &vertexIndexBuffer));
-	mContext->IASetIndexBuffer(vertexIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
+	{
+		// 常数缓存（矩阵）
+		struct ConstantBuffer
+		{
+			struct
+			{
+				float element[4][4];
+			} transformation;
+		};
+		const ConstantBuffer cb =
+		{
+			// 此矩阵是绕Z轴旋转
+			{
+				std::cos(angle),	std::sin(angle), 0.0f, 0.0f,
+				-std::sin(angle),	std::cos(angle), 0.0f, 0.0f,
+				0.0f,				0.0f,			 1.0f, 0.0f,
+				0.0f,				0.0f,			 0.0f, 1.0f,
+			}
+		};
+		// 设置Buffer类型为顶点索引，以及步进量
+		D3D11_BUFFER_DESC descConstantBuffer = {};
+		descConstantBuffer.ByteWidth = sizeof(cb);
+		descConstantBuffer.Usage = D3D11_USAGE_DYNAMIC;		// 每帧都需要根据CPU传进来的angle更新矩阵
+		descConstantBuffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;	
+		descConstantBuffer.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;	// CPU需要设置angle
+		descConstantBuffer.MiscFlags = 0u;
+		descConstantBuffer.StructureByteStride = 0u;
+		// 真正输入给Buffer的数据
+		D3D11_SUBRESOURCE_DATA subDataConstantBuffer = {};
+		subDataConstantBuffer.pSysMem = &cb;
+		subDataConstantBuffer.SysMemPitch = 0u;
+		subDataConstantBuffer.SysMemSlicePitch = 0u;
+		// 创建ID3D11Buffer
+		wrl::ComPtr<ID3D11Buffer> constantBuffer;
+		HRESULT hr;
+		GFX_THROW_INFO(mDevice->CreateBuffer(&descConstantBuffer, &subDataConstantBuffer, &constantBuffer));
+		mContext->VSSetConstantBuffers(0u, 1u, constantBuffer.GetAddressOf());
+	}
 
 	// 加载VertexShader
 	wrl::ComPtr<ID3DBlob> blobVS;
 	wrl::ComPtr<ID3D11VertexShader> vertexShader;
+	HRESULT hr;
 	GFX_THROW_INFO(D3DReadFileToBlob(L"VertexShader.cso", &blobVS));
 	GFX_THROW_INFO(mDevice->CreateVertexShader(blobVS->GetBufferPointer(), blobVS->GetBufferSize(), nullptr, &vertexShader));
 	mContext->VSSetShader(vertexShader.Get(), nullptr, 0);
