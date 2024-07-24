@@ -1,12 +1,12 @@
-#include "Graphics.h"
+ï»¿#include "Graphics.h"
 #include "ChiliException.h"
 #include <d3dcompiler.h>
 #include <cmath>
 
 Graphics::Graphics(HWND hWnd)
 {
-	DXGI_SWAP_CHAIN_DESC sd = {};		// ½»»»Á´ÃèÊö·û
-	// BufferDesc »º´æÃèÊö·û  0:Ä¬ÈÏÖµ
+	DXGI_SWAP_CHAIN_DESC sd = {};		// äº¤æ¢é“¾æè¿°ç¬¦
+	// BufferDesc ç¼“å­˜æè¿°ç¬¦  0:é»˜è®¤å€¼
 	sd.BufferDesc.Width = 0;
 	sd.BufferDesc.Height = 0;
 	sd.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
@@ -15,13 +15,13 @@ Graphics::Graphics(HWND hWnd)
 	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 	sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 
-	sd.SampleDesc.Count = 1;	// ÓÃÓÚÏû³ı¾â³İµÄ²ÉÑùÄ£Ê½
-	sd.SampleDesc.Quality = 0;	// ²»ĞèÒª¿¹¾â³İ
-	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;		//´Ë»º³åÇøÄÚÈİÓÃÓÚ½»»»ºóÊä³öµ½RenderTargetÉÏ
-	sd.BufferCount = 1;		// ÎÒÃÇĞèÒªÒ»¸öºó»º³åÇø£¬ÔÙ¼ÓÉÏÒ»¸ö×Ô¶¯ÉèÖÃµÄÇ°»º³åÇø£¬¼´Á½¸ö»º³åÇø
-	sd.OutputWindow = hWnd;		// ´°¿Ú¾ä±ú
+	sd.SampleDesc.Count = 1;	// ç”¨äºæ¶ˆé™¤é”¯é½¿çš„é‡‡æ ·æ¨¡å¼
+	sd.SampleDesc.Quality = 0;	// ä¸éœ€è¦æŠ—é”¯é½¿
+	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;		//æ­¤ç¼“å†²åŒºå†…å®¹ç”¨äºäº¤æ¢åè¾“å‡ºåˆ°RenderTargetä¸Š
+	sd.BufferCount = 2;		// æˆ‘ä»¬éœ€è¦ä¸€ä¸ªåç¼“å†²åŒºï¼Œå†åŠ ä¸Šä¸€ä¸ªè‡ªåŠ¨è®¾ç½®çš„å‰ç¼“å†²åŒºï¼Œå³ä¸¤ä¸ªç¼“å†²åŒº
+	sd.OutputWindow = hWnd;		// çª—å£å¥æŸ„
 	sd.Windowed = TRUE;
-	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;	// ½»»»Ğ§¹û
+	sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;	// äº¤æ¢æ•ˆæœ
 	sd.Flags = 0;
 
 	UINT swapCreateFlags = D3D11_CREATE_DEVICE_DEBUG;
@@ -45,7 +45,7 @@ Graphics::Graphics(HWND hWnd)
 		GFX_THROW_INFO(hr);
 	}
 
-	// µÃµ½ºó»º³åÇø£¨ÎÆÀí£¬Ë÷ÒıÊÇ0£©È»ºó´´½¨äÖÈ¾Ä¿±êÊÓÍ¼£¬ÓĞÁËRenderTargetViewÖ®ºó£¬¾Í²»ĞèÒªºó»º³åÇøÁË
+	// å¾—åˆ°åç¼“å†²åŒºï¼ˆçº¹ç†ï¼Œç´¢å¼•æ˜¯0ï¼‰ç„¶ååˆ›å»ºæ¸²æŸ“ç›®æ ‡è§†å›¾ï¼Œæœ‰äº†RenderTargetViewä¹‹åï¼Œå°±ä¸éœ€è¦åç¼“å†²åŒºäº†
 	wrl::ComPtr<ID3D11Resource> BackBUffer;
 	GFX_THROW_INFO(mSwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &BackBUffer));
 	GFX_THROW_INFO(mDevice->CreateRenderTargetView(BackBUffer.Get(), nullptr, &mRenderTargetView));
@@ -80,7 +80,7 @@ void Graphics::clearRenderTargetView(float red, float green, float blue) noexcep
 
 void Graphics::drawTriangle(float angle)
 {
-	// ×¼±¸Ò»×éÊı¾İ
+	// å‡†å¤‡ä¸€ç»„æ•°æ®
 	struct Vertex
 	{
 		float x;
@@ -110,7 +110,7 @@ void Graphics::drawTriangle(float angle)
 		//{ 0.5f, -0.5f, 0, 0, 255 },
 	};
 	{
-		// ÃèÊöBufferÊÇ¸ÉÊ²Ã´ÓÃµÄ
+		// æè¿°Bufferæ˜¯å¹²ä»€ä¹ˆç”¨çš„
 		D3D11_BUFFER_DESC descVertex;				
 		descVertex.ByteWidth = sizeof(vertices);
 		descVertex.Usage = D3D11_USAGE_DEFAULT;
@@ -118,25 +118,25 @@ void Graphics::drawTriangle(float angle)
 		descVertex.CPUAccessFlags = 0u;
 		descVertex.MiscFlags = 0u;
 		descVertex.StructureByteStride = sizeof(Vertex);
-		// ÕæÕıÊäÈë¸øBufferµÄÊı¾İ
+		// çœŸæ­£è¾“å…¥ç»™Bufferçš„æ•°æ®
 		D3D11_SUBRESOURCE_DATA subDataVertex;		
 		subDataVertex.pSysMem = vertices;
 		subDataVertex.SysMemPitch = 0u;
 		subDataVertex.SysMemSlicePitch = 0u;
-		// ´´½¨ID3D11Buffer
+		// åˆ›å»ºID3D11Buffer
 		wrl::ComPtr<ID3D11Buffer> vertexBuffer;
 		HRESULT hr;
 		GFX_THROW_INFO( mDevice->CreateBuffer(&descVertex, &subDataVertex, &vertexBuffer) );
-		// ÉèÖÃÊäÈë×°ÅäÆ÷
+		// è®¾ç½®è¾“å…¥è£…é…å™¨
 		UINT pStrides = sizeof(Vertex);
 		UINT offset = 0u;
-		// ´Ë´¦ÓÃGetAddressOfÊÇÒòÎª£¬´Ë´¦ÎÒÃÇ²»ĞèÒª¸øvertexBufferÌî³äÈÎºÎ¶«Î÷£¬Ö»ÊÇÖ¸¶¨Ö¸ÕëµØÖ·£¬
-		// ¶øComPtrÓÃ&·ûµÄ»°¾Í»á°ÑÖ®Ç°µÄÄÚÈİÊÍ·Åµô£¬²»ÊÇÎÒÃÇÏëÒªµÄ½á¹û£¬ËùÒÔÓÃGetAdressOf½ö½öÖ»È¡µØÖ·
+		// æ­¤å¤„ç”¨GetAddressOfæ˜¯å› ä¸ºï¼Œæ­¤å¤„æˆ‘ä»¬ä¸éœ€è¦ç»™vertexBufferå¡«å……ä»»ä½•ä¸œè¥¿ï¼Œåªæ˜¯æŒ‡å®šæŒ‡é’ˆåœ°å€ï¼Œ
+		// è€ŒComPtrç”¨&ç¬¦çš„è¯å°±ä¼šæŠŠä¹‹å‰çš„å†…å®¹é‡Šæ”¾æ‰ï¼Œä¸æ˜¯æˆ‘ä»¬æƒ³è¦çš„ç»“æœï¼Œæ‰€ä»¥ç”¨GetAdressOfä»…ä»…åªå–åœ°å€
 		mContext->IASetVertexBuffers(0u, 1u, vertexBuffer.GetAddressOf(), &pStrides, &offset);
 	}
 
 	
-		// ¶¥µãË÷Òı
+		// é¡¶ç‚¹ç´¢å¼•
 		const unsigned short indices[] =
 		{
 			0, 1, 2,
@@ -145,7 +145,7 @@ void Graphics::drawTriangle(float angle)
 			5, 2, 1,
 		};
 	{
-		// ÉèÖÃBufferÀàĞÍÎª¶¥µãË÷Òı£¬ÒÔ¼°²½½øÁ¿
+		// è®¾ç½®Bufferç±»å‹ä¸ºé¡¶ç‚¹ç´¢å¼•ï¼Œä»¥åŠæ­¥è¿›é‡
 		D3D11_BUFFER_DESC descIndexBuffer = {};
 		descIndexBuffer.ByteWidth = sizeof(indices);
 		descIndexBuffer.Usage = D3D11_USAGE_DEFAULT;
@@ -153,12 +153,12 @@ void Graphics::drawTriangle(float angle)
 		descIndexBuffer.CPUAccessFlags = 0u;
 		descIndexBuffer.MiscFlags = 0u;
 		descIndexBuffer.StructureByteStride = sizeof(unsigned short);
-		// ÕæÕıÊäÈë¸øBufferµÄÊı¾İ
+		// çœŸæ­£è¾“å…¥ç»™Bufferçš„æ•°æ®
 		D3D11_SUBRESOURCE_DATA subDataIndexBuffer = {};
 		subDataIndexBuffer.pSysMem = indices;
 		subDataIndexBuffer.SysMemPitch = 0u;
 		subDataIndexBuffer.SysMemSlicePitch = 0u;
-		// ´´½¨ID3D11Buffer
+		// åˆ›å»ºID3D11Buffer
 		wrl::ComPtr<ID3D11Buffer> vertexIndexBuffer;
 		HRESULT hr;
 		GFX_THROW_INFO(mDevice->CreateBuffer(&descIndexBuffer, &subDataIndexBuffer, &vertexIndexBuffer));
@@ -166,7 +166,7 @@ void Graphics::drawTriangle(float angle)
 	}
 
 	{
-		// ³£Êı»º´æ£¨¾ØÕó£©
+		// å¸¸æ•°ç¼“å­˜ï¼ˆçŸ©é˜µï¼‰
 		struct ConstantBuffer
 		{
 			struct
@@ -176,8 +176,8 @@ void Graphics::drawTriangle(float angle)
 		};
 		const ConstantBuffer cb =
 		{
-			// ´Ë¾ØÕóÊÇÈÆZÖáĞı×ª
-			// ´°¿Ú´óĞ¡ÊÇ800*600£¬ËùÒÔXÖá *£¨3/4)£¬ÕâÑùÔÚĞı×ªÊ±²»»áÊÕµ½¼·Ñ¹
+			// æ­¤çŸ©é˜µæ˜¯ç»•Zè½´æ—‹è½¬
+			// çª—å£å¤§å°æ˜¯800*600ï¼Œæ‰€ä»¥Xè½´ *ï¼ˆ3/4)ï¼Œè¿™æ ·åœ¨æ—‹è½¬æ—¶ä¸ä¼šæ”¶åˆ°æŒ¤å‹
 			{
 				(3.0 / 4.0) * std::cos(angle),	std::sin(angle), 0.0f, 0.0f,
 				(3.0 / 4.0) * -std::sin(angle),	std::cos(angle), 0.0f, 0.0f,
@@ -185,27 +185,27 @@ void Graphics::drawTriangle(float angle)
 				0.0f,				0.0f,			 0.0f, 1.0f,
 			}
 		};
-		// ÉèÖÃBufferÀàĞÍÎª³£Êı»º´æ£¬ÒÔ¼°Usage, Flags
+		// è®¾ç½®Bufferç±»å‹ä¸ºå¸¸æ•°ç¼“å­˜ï¼Œä»¥åŠUsage, Flags
 		D3D11_BUFFER_DESC descConstantBuffer = {};
 		descConstantBuffer.ByteWidth = sizeof(cb);
-		descConstantBuffer.Usage = D3D11_USAGE_DYNAMIC;		// Ã¿Ö¡¶¼ĞèÒª¸ù¾İCPU´«½øÀ´µÄangle¸üĞÂ¾ØÕó
+		descConstantBuffer.Usage = D3D11_USAGE_DYNAMIC;		// æ¯å¸§éƒ½éœ€è¦æ ¹æ®CPUä¼ è¿›æ¥çš„angleæ›´æ–°çŸ©é˜µ
 		descConstantBuffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;	
-		descConstantBuffer.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;	// CPUĞèÒªÉèÖÃangle
+		descConstantBuffer.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;	// CPUéœ€è¦è®¾ç½®angle
 		descConstantBuffer.MiscFlags = 0u;
 		descConstantBuffer.StructureByteStride = 0u;
-		// ÕæÕıÊäÈë¸øBufferµÄÊı¾İ
+		// çœŸæ­£è¾“å…¥ç»™Bufferçš„æ•°æ®
 		D3D11_SUBRESOURCE_DATA subDataConstantBuffer = {};
 		subDataConstantBuffer.pSysMem = &cb;
 		subDataConstantBuffer.SysMemPitch = 0u;
 		subDataConstantBuffer.SysMemSlicePitch = 0u;
-		// ´´½¨ID3D11Buffer
+		// åˆ›å»ºID3D11Buffer
 		wrl::ComPtr<ID3D11Buffer> constantBuffer;
 		HRESULT hr;
 		GFX_THROW_INFO(mDevice->CreateBuffer(&descConstantBuffer, &subDataConstantBuffer, &constantBuffer));
 		mContext->VSSetConstantBuffers(0u, 1u, constantBuffer.GetAddressOf());
 	}
 
-	// ¼ÓÔØVertexShader
+	// åŠ è½½VertexShader
 	wrl::ComPtr<ID3DBlob> blobVS;
 	wrl::ComPtr<ID3D11VertexShader> vertexShader;
 	HRESULT hr;
@@ -213,31 +213,31 @@ void Graphics::drawTriangle(float angle)
 	GFX_THROW_INFO(mDevice->CreateVertexShader(blobVS->GetBufferPointer(), blobVS->GetBufferSize(), nullptr, &vertexShader));
 	mContext->VSSetShader(vertexShader.Get(), nullptr, 0);
 
-	// ÉèÖÃÍ¼ÔªÍØÆË
+	// è®¾ç½®å›¾å…ƒæ‹“æ‰‘
 	mContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	// ½«¶¥µãÊı¾İ´«ÈëVSÖĞ
+	// å°†é¡¶ç‚¹æ•°æ®ä¼ å…¥VSä¸­
 	wrl::ComPtr<ID3D11InputLayout> inputLayout;
 	const D3D11_INPUT_ELEMENT_DESC inputDesc[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 8, D3D11_INPUT_PER_VERTEX_DATA, 0},		// 8: 2¸öfloat
+		{"Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 8, D3D11_INPUT_PER_VERTEX_DATA, 0},		// 8: 2ä¸ªfloat
 	};
 	mDevice->CreateInputLayout(inputDesc, (UINT)std::size(inputDesc), blobVS->GetBufferPointer(), blobVS->GetBufferSize(), &inputLayout);
 	mContext->IASetInputLayout(inputLayout.Get());
 
 
 	wrl::ComPtr<ID3DBlob> blobPS;
-	// ¼ÓÔØpixelShader
+	// åŠ è½½pixelShader
 	wrl::ComPtr<ID3D11PixelShader> pixelShader;
-	// ´Ë´¦ÔÙ´ÎÊ¹ÓÃblobÊÇÒòÎª£¬ComPtr»áÏÈÊÍ·ÅÔ­ÓĞµÄÄÚÈİ£¬È»ºó²Å»á×÷Îª¿ÕÄÚÈİµÄÖ¸ÕëÈ¥Ìî³äĞÂµÄÄÚÈİ
+	// æ­¤å¤„å†æ¬¡ä½¿ç”¨blobæ˜¯å› ä¸ºï¼ŒComPträ¼šå…ˆé‡Šæ”¾åŸæœ‰çš„å†…å®¹ï¼Œç„¶åæ‰ä¼šä½œä¸ºç©ºå†…å®¹çš„æŒ‡é’ˆå»å¡«å……æ–°çš„å†…å®¹
 	GFX_THROW_INFO(D3DReadFileToBlob(L"PixelShader.cso", &blobPS));
 	GFX_THROW_INFO(mDevice->CreatePixelShader(blobPS->GetBufferPointer(), blobPS->GetBufferSize(), nullptr, &pixelShader));
 	mContext->PSSetShader(pixelShader.Get(), nullptr, 0);
 
-	// äÖÈ¾Ä¿±êÊÓÍ¼
-	// ´Ë´¦ÓÃGetAddressOfÊÇÒòÎª£¬´Ë´¦ÎÒÃÇ²»ĞèÒª¸øRenderTargetViewÌî³äÈÎºÎ¶«Î÷£¬Ö»ÊÇÖ¸¶¨Ö¸ÕëµØÖ·£¬
-	// ¶øComPtrÓÃ&·ûµÄ»°¾Í»á°ÑÖ®Ç°µÄÄÚÈİÊÍ·Åµô£¬²»ÊÇÎÒÃÇÏëÒªµÄ½á¹û£¬ËùÒÔÓÃGetAdressOf½ö½öÖ»È¡µØÖ·
+	// æ¸²æŸ“ç›®æ ‡è§†å›¾
+	// æ­¤å¤„ç”¨GetAddressOfæ˜¯å› ä¸ºï¼Œæ­¤å¤„æˆ‘ä»¬ä¸éœ€è¦ç»™RenderTargetViewå¡«å……ä»»ä½•ä¸œè¥¿ï¼Œåªæ˜¯æŒ‡å®šæŒ‡é’ˆåœ°å€ï¼Œ
+	// è€ŒComPtrç”¨&ç¬¦çš„è¯å°±ä¼šæŠŠä¹‹å‰çš„å†…å®¹é‡Šæ”¾æ‰ï¼Œä¸æ˜¯æˆ‘ä»¬æƒ³è¦çš„ç»“æœï¼Œæ‰€ä»¥ç”¨GetAdressOfä»…ä»…åªå–åœ°å€
 	mContext->OMSetRenderTargets(1u, mRenderTargetView.GetAddressOf(), nullptr);
 
 
@@ -254,5 +254,5 @@ void Graphics::drawTriangle(float angle)
 	//GFX_THROW_INFO_ONLY(mContext->Draw(3u, 0u));
 	//mContext->Draw((UINT)std::size(vertices), 0u);
 
-	mContext->DrawIndexed((UINT)std::size(indices), 0u, 0u);
+	GFX_THROW_INFO_ONLY(mContext->DrawIndexed((UINT)std::size(indices), 0u, 0u));
 }
