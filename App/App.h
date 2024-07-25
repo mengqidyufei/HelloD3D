@@ -16,6 +16,7 @@ class App
 {
 public:
 	App();
+	~App();
 	int init();
 
 private:
@@ -24,5 +25,6 @@ private:
 private:
 	Window mWnd;
 	ChiliTimer mTimer;
+	std::vector<std::unique_ptr<class Box>> mBoxs;
 };
 

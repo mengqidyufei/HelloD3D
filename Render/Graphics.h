@@ -1,10 +1,8 @@
 #pragma once
 #include "ChiliWin.h"
 #include "DxgiInfoManager.h"
-#include <d3d11.h>
-#include <wrl.h>
-namespace wrl = Microsoft::WRL;
 
+class Bindable;
 class Graphics
 {
 public:
@@ -15,13 +13,21 @@ public:
 
 	void endFrame();	// 将后缓冲区画面翻转给前缓冲区
 	void clearRenderTargetView(float red, float green, float blue) noexcept;
-	void drawTriangle(float angle);
+
+	void DrawIndexed(UINT count);
+	void SetProjection(DirectX::FXMMATRIX proj) noexcept;
+	DirectX::XMMATRIX GetProjection() const noexcept;
+private:
+	DirectX::XMMATRIX projection;
 
 private:
 	wrl::ComPtr<ID3D11Device> mDevice;
 	wrl::ComPtr<IDXGISwapChain> mSwapChain;
 	wrl::ComPtr<ID3D11DeviceContext> mContext;
 	wrl::ComPtr<ID3D11RenderTargetView> mRenderTargetView;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> mDepthStencilView;
 	DxgiInfoManager infoManager;
+
+	friend class Bindable;
 };
 

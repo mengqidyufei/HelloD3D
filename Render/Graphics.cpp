@@ -1,12 +1,10 @@
 ﻿#include "Graphics.h"
 #include "ChiliException.h"
-#include <d3dcompiler.h>
 #include <cmath>
 
 Graphics::Graphics(HWND hWnd)
 {
-	DXGI_SWAP_CHAIN_DESC sd = {};		// 交换链描述符
-	// BufferDesc 缓存描述符  0:默认值
+	DXGI_SWAP_CHAIN_DESC sd = {};
 	sd.BufferDesc.Width = 0;
 	sd.BufferDesc.Height = 0;
 	sd.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
@@ -14,19 +12,25 @@ Graphics::Graphics(HWND hWnd)
 	sd.BufferDesc.RefreshRate.Denominator = 0;
 	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 	sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-
-	sd.SampleDesc.Count = 1;	// 用于消除锯齿的采样模式
-	sd.SampleDesc.Quality = 0;	// 不需要抗锯齿
-	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;		//此缓冲区内容用于交换后输出到RenderTarget上
-	sd.BufferCount = 2;		// 我们需要一个后缓冲区，再加上一个自动设置的前缓冲区，即两个缓冲区
-	sd.OutputWindow = hWnd;		// 窗口句柄
+	sd.SampleDesc.Count = 1;
+	sd.SampleDesc.Quality = 0;
+	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	sd.BufferCount = 2;
+	sd.OutputWindow = hWnd;
 	sd.Windowed = TRUE;
-	sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;	// 交换效果
+	sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	sd.Flags = 0;
 
-	UINT swapCreateFlags = D3D11_CREATE_DEVICE_DEBUG;
+	UINT swapCreateFlags = 0u;
+#ifndef NDEBUG
+	swapCreateFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
 
-	HRESULT hr = D3D11CreateDeviceAndSwapChain(
+	// for checking results of d3d functions
+	HRESULT hr;
+
+	// create device and front/back buffers, and swap chain and rendering context
+	GFX_THROW_INFO(D3D11CreateDeviceAndSwapChain(
 		nullptr,
 		D3D_DRIVER_TYPE_HARDWARE,
 		nullptr,
@@ -39,16 +43,59 @@ Graphics::Graphics(HWND hWnd)
 		&mDevice,
 		nullptr,
 		&mContext
-	);
-	if (hr != HRESULT())
-	{
-		GFX_THROW_INFO(hr);
-	}
+	));
 
-	// 得到后缓冲区（纹理，索引是0）然后创建渲染目标视图，有了RenderTargetView之后，就不需要后缓冲区了
-	wrl::ComPtr<ID3D11Resource> BackBUffer;
-	GFX_THROW_INFO(mSwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &BackBUffer));
-	GFX_THROW_INFO(mDevice->CreateRenderTargetView(BackBUffer.Get(), nullptr, &mRenderTargetView));
+	// gain access to texture subresource in swap chain (back buffer)
+	wrl::ComPtr<ID3D11Resource> pBackBuffer;
+	GFX_THROW_INFO(mSwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &pBackBuffer));
+	GFX_THROW_INFO(mDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &mRenderTargetView));
+
+	// create depth stensil state
+	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
+	dsDesc.DepthEnable = TRUE;
+	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	wrl::ComPtr<ID3D11DepthStencilState> pDSState;
+	GFX_THROW_INFO(mDevice->CreateDepthStencilState(&dsDesc, &pDSState));
+
+	// bind depth state
+	mContext->OMSetDepthStencilState(pDSState.Get(), 1u);
+
+	// create depth stensil texture
+	wrl::ComPtr<ID3D11Texture2D> pDepthStencil;
+	D3D11_TEXTURE2D_DESC descDepth = {};
+	descDepth.Width = 800u;
+	descDepth.Height = 600u;
+	descDepth.MipLevels = 1u;
+	descDepth.ArraySize = 1u;
+	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
+	descDepth.SampleDesc.Count = 1u;
+	descDepth.SampleDesc.Quality = 0u;
+	descDepth.Usage = D3D11_USAGE_DEFAULT;
+	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	GFX_THROW_INFO(mDevice->CreateTexture2D(&descDepth, nullptr, &pDepthStencil));
+
+	// create view of depth stensil texture
+	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
+	descDSV.Format = DXGI_FORMAT_D32_FLOAT;
+	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	descDSV.Texture2D.MipSlice = 0u;
+	GFX_THROW_INFO(mDevice->CreateDepthStencilView(
+		pDepthStencil.Get(), &descDSV, &mDepthStencilView
+	));
+
+	// bind depth stensil view to OM
+	mContext->OMSetRenderTargets(1u, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
+
+	// configure viewport
+	D3D11_VIEWPORT vp;
+	vp.Width = 800.0f;
+	vp.Height = 600.0f;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX = 0.0f;
+	vp.TopLeftY = 0.0f;
+	mContext->RSSetViewports(1u, &vp);
 }
 
 Graphics::~Graphics()
@@ -74,185 +121,22 @@ void Graphics::endFrame()
 
 void Graphics::clearRenderTargetView(float red, float green, float blue) noexcept
 {
-	const float color[] = { red, green, blue, 1.0f };
+	const float color[] = { red,green,blue,1.0f };
 	mContext->ClearRenderTargetView(mRenderTargetView.Get(), color);
+	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 
-void Graphics::drawTriangle(float angle)
+void Graphics::DrawIndexed(UINT count)
 {
-	// 准备一组数据
-	struct Vertex
-	{
-		float x;
-		float y;
+	GFX_THROW_INFO_ONLY(mContext->DrawIndexed(count, 0u, 0u));
+}
 
-		unsigned char r;
-		unsigned char g;
-		unsigned char b;
-		unsigned char a;
-	};
-	const Vertex vertices[] =
-	{
-		{ 0.0f, 0.5f, 255, 0, 0 },
-		{ 0.5f, -0.5f, 0, 255, 0 },
-		{ -0.5f, -0.5f, 0, 0, 255 },
+void Graphics::SetProjection(DirectX::FXMMATRIX proj) noexcept
+{
+	projection = proj;
+}
 
-		//{ 0.0f, 0.5f, 255, 0, 0 },
-		//{ -0.5f, -0.5f, 0, 255, 0 },
-		{ -0.3f, 0.3f, 0, 0, 255 },
-
-		//{ 0.0f, 0.5f, 255, 0, 0 },
-		{ 0.3f, 0.3f, 0, 255, 0 },
-		//{ 0.5f, -0.5f, 0, 0, 255 },
-
-		{ 0.0f, -0.8f, 255, 0, 0 },
-		//{ -0.5f, -0.5f, 0, 255, 0 },
-		//{ 0.5f, -0.5f, 0, 0, 255 },
-	};
-	{
-		// 描述Buffer是干什么用的
-		D3D11_BUFFER_DESC descVertex;				
-		descVertex.ByteWidth = sizeof(vertices);
-		descVertex.Usage = D3D11_USAGE_DEFAULT;
-		descVertex.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		descVertex.CPUAccessFlags = 0u;
-		descVertex.MiscFlags = 0u;
-		descVertex.StructureByteStride = sizeof(Vertex);
-		// 真正输入给Buffer的数据
-		D3D11_SUBRESOURCE_DATA subDataVertex;		
-		subDataVertex.pSysMem = vertices;
-		subDataVertex.SysMemPitch = 0u;
-		subDataVertex.SysMemSlicePitch = 0u;
-		// 创建ID3D11Buffer
-		wrl::ComPtr<ID3D11Buffer> vertexBuffer;
-		HRESULT hr;
-		GFX_THROW_INFO( mDevice->CreateBuffer(&descVertex, &subDataVertex, &vertexBuffer) );
-		// 设置输入装配器
-		UINT pStrides = sizeof(Vertex);
-		UINT offset = 0u;
-		// 此处用GetAddressOf是因为，此处我们不需要给vertexBuffer填充任何东西，只是指定指针地址，
-		// 而ComPtr用&符的话就会把之前的内容释放掉，不是我们想要的结果，所以用GetAdressOf仅仅只取地址
-		mContext->IASetVertexBuffers(0u, 1u, vertexBuffer.GetAddressOf(), &pStrides, &offset);
-	}
-
-	
-		// 顶点索引
-		const unsigned short indices[] =
-		{
-			0, 1, 2,
-			0, 2, 3,
-			0, 4, 1,
-			5, 2, 1,
-		};
-	{
-		// 设置Buffer类型为顶点索引，以及步进量
-		D3D11_BUFFER_DESC descIndexBuffer = {};
-		descIndexBuffer.ByteWidth = sizeof(indices);
-		descIndexBuffer.Usage = D3D11_USAGE_DEFAULT;
-		descIndexBuffer.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		descIndexBuffer.CPUAccessFlags = 0u;
-		descIndexBuffer.MiscFlags = 0u;
-		descIndexBuffer.StructureByteStride = sizeof(unsigned short);
-		// 真正输入给Buffer的数据
-		D3D11_SUBRESOURCE_DATA subDataIndexBuffer = {};
-		subDataIndexBuffer.pSysMem = indices;
-		subDataIndexBuffer.SysMemPitch = 0u;
-		subDataIndexBuffer.SysMemSlicePitch = 0u;
-		// 创建ID3D11Buffer
-		wrl::ComPtr<ID3D11Buffer> vertexIndexBuffer;
-		HRESULT hr;
-		GFX_THROW_INFO(mDevice->CreateBuffer(&descIndexBuffer, &subDataIndexBuffer, &vertexIndexBuffer));
-		mContext->IASetIndexBuffer(vertexIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
-	}
-
-	{
-		// 常数缓存（矩阵）
-		struct ConstantBuffer
-		{
-			struct
-			{
-				float element[4][4];
-			} transformation;
-		};
-		const ConstantBuffer cb =
-		{
-			// 此矩阵是绕Z轴旋转
-			// 窗口大小是800*600，所以X轴 *（3/4)，这样在旋转时不会收到挤压
-			{
-				(3.0 / 4.0) * std::cos(angle),	std::sin(angle), 0.0f, 0.0f,
-				(3.0 / 4.0) * -std::sin(angle),	std::cos(angle), 0.0f, 0.0f,
-				0.0f,				0.0f,			 1.0f, 0.0f,
-				0.0f,				0.0f,			 0.0f, 1.0f,
-			}
-		};
-		// 设置Buffer类型为常数缓存，以及Usage, Flags
-		D3D11_BUFFER_DESC descConstantBuffer = {};
-		descConstantBuffer.ByteWidth = sizeof(cb);
-		descConstantBuffer.Usage = D3D11_USAGE_DYNAMIC;		// 每帧都需要根据CPU传进来的angle更新矩阵
-		descConstantBuffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;	
-		descConstantBuffer.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;	// CPU需要设置angle
-		descConstantBuffer.MiscFlags = 0u;
-		descConstantBuffer.StructureByteStride = 0u;
-		// 真正输入给Buffer的数据
-		D3D11_SUBRESOURCE_DATA subDataConstantBuffer = {};
-		subDataConstantBuffer.pSysMem = &cb;
-		subDataConstantBuffer.SysMemPitch = 0u;
-		subDataConstantBuffer.SysMemSlicePitch = 0u;
-		// 创建ID3D11Buffer
-		wrl::ComPtr<ID3D11Buffer> constantBuffer;
-		HRESULT hr;
-		GFX_THROW_INFO(mDevice->CreateBuffer(&descConstantBuffer, &subDataConstantBuffer, &constantBuffer));
-		mContext->VSSetConstantBuffers(0u, 1u, constantBuffer.GetAddressOf());
-	}
-
-	// 加载VertexShader
-	wrl::ComPtr<ID3DBlob> blobVS;
-	wrl::ComPtr<ID3D11VertexShader> vertexShader;
-	HRESULT hr;
-	GFX_THROW_INFO(D3DReadFileToBlob(L"VertexShader.cso", &blobVS));
-	GFX_THROW_INFO(mDevice->CreateVertexShader(blobVS->GetBufferPointer(), blobVS->GetBufferSize(), nullptr, &vertexShader));
-	mContext->VSSetShader(vertexShader.Get(), nullptr, 0);
-
-	// 设置图元拓扑
-	mContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	// 将顶点数据传入VS中
-	wrl::ComPtr<ID3D11InputLayout> inputLayout;
-	const D3D11_INPUT_ELEMENT_DESC inputDesc[] =
-	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 8, D3D11_INPUT_PER_VERTEX_DATA, 0},		// 8: 2个float
-	};
-	mDevice->CreateInputLayout(inputDesc, (UINT)std::size(inputDesc), blobVS->GetBufferPointer(), blobVS->GetBufferSize(), &inputLayout);
-	mContext->IASetInputLayout(inputLayout.Get());
-
-
-	wrl::ComPtr<ID3DBlob> blobPS;
-	// 加载pixelShader
-	wrl::ComPtr<ID3D11PixelShader> pixelShader;
-	// 此处再次使用blob是因为，ComPtr会先释放原有的内容，然后才会作为空内容的指针去填充新的内容
-	GFX_THROW_INFO(D3DReadFileToBlob(L"PixelShader.cso", &blobPS));
-	GFX_THROW_INFO(mDevice->CreatePixelShader(blobPS->GetBufferPointer(), blobPS->GetBufferSize(), nullptr, &pixelShader));
-	mContext->PSSetShader(pixelShader.Get(), nullptr, 0);
-
-	// 渲染目标视图
-	// 此处用GetAddressOf是因为，此处我们不需要给RenderTargetView填充任何东西，只是指定指针地址，
-	// 而ComPtr用&符的话就会把之前的内容释放掉，不是我们想要的结果，所以用GetAdressOf仅仅只取地址
-	mContext->OMSetRenderTargets(1u, mRenderTargetView.GetAddressOf(), nullptr);
-
-
-	// NDC -> viewport
-	D3D11_VIEWPORT viewport;
-	viewport.TopLeftX = 0;
-	viewport.TopLeftY = 0;
-	viewport.Width = 800;
-	viewport.Height = 600;
-	viewport.MinDepth = 0;
-	viewport.MaxDepth = 1;
-	mContext->RSSetViewports(1u, &viewport);
-
-	//GFX_THROW_INFO_ONLY(mContext->Draw(3u, 0u));
-	//mContext->Draw((UINT)std::size(vertices), 0u);
-
-	GFX_THROW_INFO_ONLY(mContext->DrawIndexed((UINT)std::size(indices), 0u, 0u));
+DirectX::XMMATRIX Graphics::GetProjection() const noexcept
+{
+	return projection;
 }

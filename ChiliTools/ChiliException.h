@@ -23,15 +23,6 @@
 #include <exception>
 #include <string>
 
-#define CHWND_EXCEPT(hr) HrException(__LINE__, __FILE__, hr)
-#define CHWND_LAST_EXCEPT() HrException(__LINE__, __FILE__, GetLastError())
-#define GFX_EXCEPT(hr) HrException( __LINE__,__FILE__,(hr), infoManager.GetMessages() )
-#define NO_GFX_EXCEPT() NoGfxException( __LINE__,__FILE__ )
-#define GFX_DEVICE_REMOVED_EXCEPT(hr) DeviceRemovedException( __LINE__,__FILE__,(hr),infoManager.GetMessages() )
-#define GFX_THROW_NOINFO(hrcall) if( FAILED( hr = (hrcall) ) ) throw HrException( __LINE__,__FILE__,hr )
-#define GFX_THROW_INFO(hrcall) infoManager.reset(); if( FAILED( hr = (hrcall) ) ) throw GFX_EXCEPT(hr)
-#define GFX_THROW_INFO_ONLY(call) infoManager.reset(); (call); {auto v = infoManager.GetMessages(); if(!v.empty()) {throw InfoException( __LINE__,__FILE__,v);}}
-
 class ChiliException : public std::exception
 {
 public:

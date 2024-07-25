@@ -125,7 +125,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir);App;ChiliTools;Render;Shader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);App;ChiliTools;Render;Shader;Render/Drawable;Render/Bindable;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -142,7 +142,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir);App;ChiliTools;Render;Shader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);App;ChiliTools;Render;Shader;Render/Drawable;Render/Bindable;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -154,6 +154,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App/App.cpp" />
+    <ClCompile Include="App\Box.cpp" />
     <ClCompile Include="ChiliTools/ChiliException.cpp" />
     <ClCompile Include="ChiliTools/ChiliTimer.cpp" />
     <ClCompile Include="ChiliTools/Keyboard.cpp" />
@@ -163,9 +164,19 @@
     <ClCompile Include="App/WinMain.cpp" />
     <ClCompile Include="ChiliTools\DxgiInfoManager.cpp" />
     <ClCompile Include="Render/Graphics.cpp" />
+    <ClCompile Include="Render\Bindable\Bindable.cpp" />
+    <ClCompile Include="Render\Bindable\IndexBuffer.cpp" />
+    <ClCompile Include="Render\Bindable\InputLayout.cpp" />
+    <ClCompile Include="Render\Bindable\PixelShader.cpp" />
+    <ClCompile Include="Render\Bindable\Topology.cpp" />
+    <ClCompile Include="Render\Bindable\TransformCbuf.cpp" />
+    <ClCompile Include="Render\Bindable\VertexBuffer.cpp" />
+    <ClCompile Include="Render\Bindable\VertexShader.cpp" />
+    <ClCompile Include="Render\Drawable\Drawable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App/App.h" />
+    <ClInclude Include="App\Box.h" />
     <ClInclude Include="ChiliTools/ChiliException.h" />
     <ClInclude Include="ChiliTools/ChiliTimer.h" />
     <ClInclude Include="ChiliTools/ChiliWin.h" />
@@ -175,7 +186,19 @@
     <ClInclude Include="ChiliTools/WindowsMessageMap.h" />
     <ClInclude Include="ChiliTools\ChiliWRL.h" />
     <ClInclude Include="ChiliTools\DxgiInfoManager.h" />
+    <ClInclude Include="ChiliTools\GraphicsThrowMacros.h" />
+    <ClInclude Include="ChiliTools\WindowsThrowMacros.h" />
     <ClInclude Include="Render/Graphics.h" />
+    <ClInclude Include="Render\Bindable\Bindable.h" />
+    <ClInclude Include="Render\Bindable\ConstantBuffer.h" />
+    <ClInclude Include="Render\Bindable\IndexBuffer.h" />
+    <ClInclude Include="Render\Bindable\InputLayout.h" />
+    <ClInclude Include="Render\Bindable\PixelShader.h" />
+    <ClInclude Include="Render\Bindable\Topology.h" />
+    <ClInclude Include="Render\Bindable\TransformCbuf.h" />
+    <ClInclude Include="Render\Bindable\VertexBuffer.h" />
+    <ClInclude Include="Render\Bindable\VertexShader.h" />
+    <ClInclude Include="Render\Drawable\Drawable.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
@@ -192,6 +215,8 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Shader\VertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
@@ -200,6 +225,8 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

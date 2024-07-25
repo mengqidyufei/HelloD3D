@@ -1,5 +1,6 @@
 #include "Window.h"
 #include "WindowsMessageMap.h"
+#include "WindowsThrowMacros.h"
 #include "resource.h"
 #include <ostream>
 #include <sstream>
@@ -44,7 +45,7 @@ Graphics& Window::getGraphics()
 {
 	if (nullptr == mGraphics)
 	{
-		throw NO_GFX_EXCEPT();
+		throw CHWND_NOGFX_EXCEPT();
 	}
 	return *mGraphics;
 }

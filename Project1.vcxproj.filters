@@ -16,6 +16,12 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{06ec312b-4a94-4452-92f3-a70b93a276d0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Bindable">
+      <UniqueIdentifier>{ec27d1d4-a60c-4edf-a3d9-85cca6dfa08e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Drawable">
+      <UniqueIdentifier>{c8a95339-2e9d-4f2d-87f4-6607c9b18c67}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App/WinMain.cpp">
@@ -46,6 +52,36 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ChiliTools\DxgiInfoManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\Bindable\Bindable.cpp">
+      <Filter>Header Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\Bindable\IndexBuffer.cpp">
+      <Filter>Header Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\Bindable\PixelShader.cpp">
+      <Filter>Header Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\Bindable\Topology.cpp">
+      <Filter>Header Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\Bindable\TransformCbuf.cpp">
+      <Filter>Header Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\Bindable\VertexBuffer.cpp">
+      <Filter>Header Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\Bindable\VertexShader.cpp">
+      <Filter>Header Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\Drawable\Drawable.cpp">
+      <Filter>Header Files\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\Bindable\InputLayout.cpp">
+      <Filter>Header Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="App\Box.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -84,6 +120,45 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ChiliTools\ChiliWRL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\Bindable\Bindable.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\Bindable\ConstantBuffer.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\Bindable\IndexBuffer.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\Bindable\PixelShader.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\Bindable\Topology.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\Bindable\TransformCbuf.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\Bindable\VertexBuffer.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\Bindable\VertexShader.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="ChiliTools\GraphicsThrowMacros.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ChiliTools\WindowsThrowMacros.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\Drawable\Drawable.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\Bindable\InputLayout.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="App\Box.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
