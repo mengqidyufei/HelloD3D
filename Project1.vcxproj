@@ -154,7 +154,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App/App.cpp" />
-    <ClCompile Include="App\Box.cpp" />
     <ClCompile Include="ChiliTools/ChiliException.cpp" />
     <ClCompile Include="ChiliTools/ChiliTimer.cpp" />
     <ClCompile Include="ChiliTools/Keyboard.cpp" />
@@ -172,11 +171,11 @@
     <ClCompile Include="Render\Bindable\TransformCbuf.cpp" />
     <ClCompile Include="Render\Bindable\VertexBuffer.cpp" />
     <ClCompile Include="Render\Bindable\VertexShader.cpp" />
+    <ClCompile Include="Render\Drawable\Box.cpp" />
     <ClCompile Include="Render\Drawable\Drawable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App/App.h" />
-    <ClInclude Include="App\Box.h" />
     <ClInclude Include="ChiliTools/ChiliException.h" />
     <ClInclude Include="ChiliTools/ChiliTimer.h" />
     <ClInclude Include="ChiliTools/ChiliWin.h" />
@@ -198,7 +197,9 @@
     <ClInclude Include="Render\Bindable\TransformCbuf.h" />
     <ClInclude Include="Render\Bindable\VertexBuffer.h" />
     <ClInclude Include="Render\Bindable\VertexShader.h" />
+    <ClInclude Include="Render\Drawable\Box.h" />
     <ClInclude Include="Render\Drawable\Drawable.h" />
+    <ClInclude Include="Render\Drawable\DrawableBase.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

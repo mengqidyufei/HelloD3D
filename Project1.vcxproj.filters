@@ -81,8 +81,8 @@
     <ClCompile Include="Render\Bindable\InputLayout.cpp">
       <Filter>Header Files\Bindable</Filter>
     </ClCompile>
-    <ClCompile Include="App\Box.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Render\Drawable\Box.cpp">
+      <Filter>Header Files\Drawable</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -158,8 +158,11 @@
     <ClInclude Include="Render\Bindable\InputLayout.h">
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
-    <ClInclude Include="App\Box.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Render\Drawable\Box.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\Drawable\DrawableBase.h">
+      <Filter>Header Files\Drawable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
