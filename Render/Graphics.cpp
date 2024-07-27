@@ -84,9 +84,6 @@ Graphics::Graphics(HWND hWnd)
 		pDepthStencil.Get(), &descDSV, &mDepthStencilView
 	));
 
-	// bind depth stensil view to OM
-	mContext->OMSetRenderTargets(1u, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
-
 	// configure viewport
 	D3D11_VIEWPORT vp;
 	vp.Width = 800.0f;
@@ -121,6 +118,9 @@ void Graphics::endFrame()
 
 void Graphics::clearRenderTargetView(float red, float green, float blue) noexcept
 {
+	// bind depth stensil view to OM
+	mContext->OMSetRenderTargets(1u, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
+
 	const float color[] = { red,green,blue,1.0f };
 	mContext->ClearRenderTargetView(mRenderTargetView.Get(), color);
 	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
