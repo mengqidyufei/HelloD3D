@@ -13,7 +13,7 @@ public:
 		INFOMAN(gfx);
 		// 描述Buffer是干什么用的
 		D3D11_BUFFER_DESC descVertex;
-		descVertex.ByteWidth = sizeof(vertices);
+		descVertex.ByteWidth = UINT(sizeof(T) * vertices.size());;
 		descVertex.Usage = D3D11_USAGE_DEFAULT;
 		descVertex.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		descVertex.CPUAccessFlags = 0u;
