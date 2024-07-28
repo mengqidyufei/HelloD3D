@@ -177,6 +177,8 @@
     <ClCompile Include="Render\Bindable\IndexBuffer.cpp" />
     <ClCompile Include="Render\Bindable\InputLayout.cpp" />
     <ClCompile Include="Render\Bindable\PixelShader.cpp" />
+    <ClCompile Include="Render\Bindable\Sampler.cpp" />
+    <ClCompile Include="Render\Bindable\Texture.cpp" />
     <ClCompile Include="Render\Bindable\Topology.cpp" />
     <ClCompile Include="Render\Bindable\TransformCbuf.cpp" />
     <ClCompile Include="Render\Bindable\VertexBuffer.cpp" />
@@ -185,6 +187,7 @@
     <ClCompile Include="Render\Drawable\Drawable.cpp" />
     <ClCompile Include="Render\Drawable\Melon.cpp" />
     <ClCompile Include="Render\Drawable\Pyramid.cpp" />
+    <ClCompile Include="Render\Drawable\Sheet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App/App.h" />
@@ -209,6 +212,8 @@
     <ClInclude Include="Render\Bindable\IndexBuffer.h" />
     <ClInclude Include="Render\Bindable\InputLayout.h" />
     <ClInclude Include="Render\Bindable\PixelShader.h" />
+    <ClInclude Include="Render\Bindable\Sampler.h" />
+    <ClInclude Include="Render\Bindable\Texture.h" />
     <ClInclude Include="Render\Bindable\Topology.h" />
     <ClInclude Include="Render\Bindable\TransformCbuf.h" />
     <ClInclude Include="Render\Bindable\VertexBuffer.h" />
@@ -223,6 +228,7 @@
     <ClInclude Include="Render\Drawable\Plane.h" />
     <ClInclude Include="Render\Drawable\Prism.h" />
     <ClInclude Include="Render\Drawable\Pyramid.h" />
+    <ClInclude Include="Render\Drawable\Sheet.h" />
     <ClInclude Include="Render\Drawable\Sphere.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
@@ -273,6 +279,14 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\TexturePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\TextureVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,0 +1,83 @@
+纹理是一个可以绑定到着色器的资源
+1、新加文件：
+Bindable
+	|- Texture
+	|	|- ::CreateTexture2D()
+	|	|		|-D3D11_TEXTURE_DESC (descTexture)
+	|	|		|-D3D11_SUBRESOURCE_DATA (sd)
+	|	|				|- sd.pSystem 系统内存（图片指针，首地址）
+	|	|				|- sd.SysMemPitch 间隔（第一行第一个像素和第二行第一个像素之间的距离，imageWidth * sizeOf(PixelColor)）
+	|	|- ::CreateShaderResourceView()
+	|	|		|-D3D11_SHADER_RESOURCE_VIEW_DESC (srv)
+	|	|				|- srv.Format = descTexture.Format
+	|	|- ::PSSetShaderResources()
+	|
+	|- Sampler
+		|- ::CreateSmplerState() // 告诉渲染管线如何处理这张图片
+					|- D3D11_SAMPLER_DESC(descSampler)
+							|- desc.Filter		// 过滤模式
+									|- MIN		// 缩小
+									|- MAG		// 放大
+									|- MIP 		// 是否使用MipMap
+									|- LINEAR	// 线性插值
+									|- POINT	// 点插值
+							|- desc.AddressU	// 水平方向上纹理超出边界怎么办
+									|- WRAP		// 复制
+									|- CLAMP	// 原纹理中边界最后一行的像素将延长并覆盖
+									|- BORDER	// 边缘填充颜色
+							|- desc.AddressV	// 垂直
+							|- desc.AddressW	// 三维
+
+Drawable
+	|- Sheet
+		|- BindTexture 			// 加载并绑定纹理（LoadImage）
+		|- BindVertexBuffer
+		|- BindSampler
+		|- BindVertexShader
+		|- BindPixelShader
+		|- BindIndexBuffer
+		|- BindInputLayout		// "Position" , "TexCoord"
+		|- BindTopology
+		|- BindConstantBuffer	// Matrix
+
+TexturePS.hlsl
+TextureVS.hlsl		
+
+2、TextureVS.hlsl		// 顶点位置， 纹理坐标
+cbuffer CBuf
+{
+	matrix transform;
+};
+
+struct VSOut
+{
+	float2 tex : TexCoord;
+	float4 pos : SV_Position;
+};
+
+VSOut main( float3 pos : Position,float2 tex : TexCoord )
+{
+	VSOut vso;
+	vso.pos = mul( float4(pos,1.0f),transform );
+	vso.tex = tex;
+	return vso;
+}
+
+3、TexturePS.hlsl		// 输入是：纹理坐标，输出是采样颜色
+
+Texture2D tex;			// Texture2D tex : register(t0); 	// 纹理将被绑定到0号寄存器
+SamplerState splr;
+
+float4 main( float2 tc : TexCoord ) : SV_Target
+{
+	return tex.Sample( splr,tc );
+}
+
+
+
+Mipmap:
+图片在经过缩小操作后，需要抛弃掉一些像素。但显然每次绘制都按实际宽高来进行缩小会对性能有很大影响。 在d3d中可以使用mipmapping技术，以额外牺牲一些内存代价的方式来获得高效的拟合效果。
+
+这里估计使用的是金字塔下采样的原理。一张256x256的纹理，通过不断的向下采样，可以获得256x256、128x128、64x64...一直到1x1的一系列位图，这些位图构建了一条mipmap链，并且不同的纹理标注有不同的mipmap等级
+
+其中mipmap等级为0的纹理即为原来的纹理，等级为1的纹理所占内存为等级为0的1/4，等级为2的纹理所占内存为等级为1的1/4...以此类推我们可以知道包含完整mipmap的纹理占用的内存空间不超过原来纹理的

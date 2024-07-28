@@ -25,7 +25,7 @@
 #include <assert.h>
 #include <memory>
 
-// 把图片存储为一组颜色数据，可以从这个类中创建图片，加载图片，获取设置像素颜色等
+
 class Surface
 {
 public:
@@ -114,7 +114,6 @@ public:
 		std::string note;
 	};
 public:
-	Surface(unsigned int width, unsigned int height, unsigned int pitch) noexcept;
 	Surface(unsigned int width, unsigned int height) noexcept;
 	Surface(Surface&& source) noexcept;
 	Surface(Surface&) = delete;
