@@ -5,6 +5,10 @@
 #include "Pyramid.h"
 #include "ChiliMath.h"
 #include <sstream>
+#include "Surface.h"
+#include "GDIPlusManager.h"
+
+GDIPlusManager gdipm;
 
 App::App()
 	:
@@ -57,6 +61,8 @@ App::App()
 	Factory f(mWnd.getGraphics());
 	mDrawables.reserve(nDrawables);
 	std::generate_n(std::back_inserter(mDrawables), nDrawables, f);
+	
+	const auto s = Surface::FromFile("Images\\kappa50.png");
 
 	mWnd.getGraphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
 }

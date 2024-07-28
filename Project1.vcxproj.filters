@@ -18,90 +18,104 @@
     <Filter Include="Header Files\Drawable">
       <UniqueIdentifier>{c8a95339-2e9d-4f2d-87f4-6607c9b18c67}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shader\Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Header Files\ChiliTools">
+      <UniqueIdentifier>{61e4c7f9-0fe8-4480-b908-372862cc00ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ChiliTools">
+      <UniqueIdentifier>{c79eefe9-81a7-4107-8c7f-986347048c0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Bindable">
+      <UniqueIdentifier>{0b95d388-a9f9-4c5f-bf8b-f098d6e4f146}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Drawable">
+      <UniqueIdentifier>{c548f87c-9b20-4b25-8603-5317ded7819c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resourcce Files">
+      <UniqueIdentifier>{622a40f8-ab08-447a-9063-e324c43d7729}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resourcce Files\SpaceBox">
+      <UniqueIdentifier>{1c71aad0-39c4-439a-b960-8a484fd044b8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App/WinMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ChiliTools/WindowsMessageMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="App/Window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ChiliTools/ChiliException.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ChiliTools/Keyboard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ChiliTools/Mouse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="App/App.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ChiliTools/ChiliTimer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Render/Graphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ChiliTools/ChiliException.cpp">
+      <Filter>Source Files\ChiliTools</Filter>
+    </ClCompile>
+    <ClCompile Include="ChiliTools/ChiliTimer.cpp">
+      <Filter>Source Files\ChiliTools</Filter>
+    </ClCompile>
     <ClCompile Include="ChiliTools\DxgiInfoManager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\ChiliTools</Filter>
+    </ClCompile>
+    <ClCompile Include="ChiliTools/Keyboard.cpp">
+      <Filter>Source Files\ChiliTools</Filter>
+    </ClCompile>
+    <ClCompile Include="ChiliTools/Mouse.cpp">
+      <Filter>Source Files\ChiliTools</Filter>
+    </ClCompile>
+    <ClCompile Include="ChiliTools/WindowsMessageMap.cpp">
+      <Filter>Source Files\ChiliTools</Filter>
     </ClCompile>
     <ClCompile Include="Render\Bindable\Bindable.cpp">
-      <Filter>Header Files\Bindable</Filter>
+      <Filter>Source Files\Bindable</Filter>
     </ClCompile>
     <ClCompile Include="Render\Bindable\IndexBuffer.cpp">
-      <Filter>Header Files\Bindable</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Bindable\PixelShader.cpp">
-      <Filter>Header Files\Bindable</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Bindable\Topology.cpp">
-      <Filter>Header Files\Bindable</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Bindable\TransformCbuf.cpp">
-      <Filter>Header Files\Bindable</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Bindable\VertexBuffer.cpp">
-      <Filter>Header Files\Bindable</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Bindable\VertexShader.cpp">
-      <Filter>Header Files\Bindable</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Drawable\Drawable.cpp">
-      <Filter>Header Files\Drawable</Filter>
+      <Filter>Source Files\Bindable</Filter>
     </ClCompile>
     <ClCompile Include="Render\Bindable\InputLayout.cpp">
-      <Filter>Header Files\Bindable</Filter>
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\Bindable\PixelShader.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\Bindable\Topology.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\Bindable\TransformCbuf.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\Bindable\VertexBuffer.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\Bindable\VertexShader.cpp">
+      <Filter>Source Files\Bindable</Filter>
     </ClCompile>
     <ClCompile Include="Render\Drawable\Box.cpp">
-      <Filter>Header Files\Drawable</Filter>
+      <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\Drawable\Drawable.cpp">
+      <Filter>Source Files\Drawable</Filter>
     </ClCompile>
     <ClCompile Include="Render\Drawable\Melon.cpp">
-      <Filter>Header Files\Drawable</Filter>
+      <Filter>Source Files\Drawable</Filter>
     </ClCompile>
     <ClCompile Include="Render\Drawable\Pyramid.cpp">
-      <Filter>Header Files\Drawable</Filter>
+      <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="ChiliTools\GDIPlusManager.cpp">
+      <Filter>Source Files\ChiliTools</Filter>
+    </ClCompile>
+    <ClCompile Include="ChiliTools\Surface.cpp">
+      <Filter>Source Files\ChiliTools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChiliTools/WindowsMessageMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ChiliTools/ChiliWin.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="App/Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ChiliTools/ChiliException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ChiliTools/Keyboard.h">
@@ -113,9 +127,6 @@
     <ClInclude Include="App/App.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ChiliTools/ChiliTimer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -123,9 +134,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ChiliTools\DxgiInfoManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ChiliTools\ChiliWRL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Render\Bindable\Bindable.h">
@@ -188,9 +196,6 @@
     <ClInclude Include="Render\Drawable\Sphere.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
-    <ClInclude Include="ChiliTools\ChiliMath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Render\Drawable\Melon.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
@@ -200,16 +205,27 @@
     <ClInclude Include="Render\Bindable\BindableDef.h">
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Project1.rc">
-      <Filter>Shader\Resource Files</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="chili.ico">
-      <Filter>Shader\Resource Files</Filter>
-    </Image>
+    <ClInclude Include="ChiliTools/ChiliException.h">
+      <Filter>Header Files\ChiliTools</Filter>
+    </ClInclude>
+    <ClInclude Include="ChiliTools\ChiliMath.h">
+      <Filter>Header Files\ChiliTools</Filter>
+    </ClInclude>
+    <ClInclude Include="ChiliTools/ChiliTimer.h">
+      <Filter>Header Files\ChiliTools</Filter>
+    </ClInclude>
+    <ClInclude Include="ChiliTools/ChiliWin.h">
+      <Filter>Header Files\ChiliTools</Filter>
+    </ClInclude>
+    <ClInclude Include="ChiliTools\ChiliWRL.h">
+      <Filter>Header Files\ChiliTools</Filter>
+    </ClInclude>
+    <ClInclude Include="ChiliTools\GDIPlusManager.h">
+      <Filter>Header Files\ChiliTools</Filter>
+    </ClInclude>
+    <ClInclude Include="ChiliTools\Surface.h">
+      <Filter>Header Files\ChiliTools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ColorBlendPS.hlsl">
@@ -224,5 +240,54 @@
     <FxCompile Include="Shader\ColorIndexVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="chili.ico">
+      <Filter>Resourcce Files</Filter>
+    </Image>
+    <Image Include="Images\brickwall.jpg">
+      <Filter>Resourcce Files</Filter>
+    </Image>
+    <Image Include="Images\brickwall_normal.jpg">
+      <Filter>Resourcce Files</Filter>
+    </Image>
+    <Image Include="Images\brickwall_normal_obj.png">
+      <Filter>Resourcce Files</Filter>
+    </Image>
+    <Image Include="Images\cube.png">
+      <Filter>Resourcce Files</Filter>
+    </Image>
+    <Image Include="Images\kappa50.png">
+      <Filter>Resourcce Files</Filter>
+    </Image>
+    <Image Include="Images\reference_nrm.png">
+      <Filter>Resourcce Files</Filter>
+    </Image>
+    <Image Include="Images\stripes.png">
+      <Filter>Resourcce Files</Filter>
+    </Image>
+    <Image Include="Images\SpaceBox\0.png">
+      <Filter>Resourcce Files\SpaceBox</Filter>
+    </Image>
+    <Image Include="Images\SpaceBox\1.png">
+      <Filter>Resourcce Files\SpaceBox</Filter>
+    </Image>
+    <Image Include="Images\SpaceBox\2.png">
+      <Filter>Resourcce Files\SpaceBox</Filter>
+    </Image>
+    <Image Include="Images\SpaceBox\3.png">
+      <Filter>Resourcce Files\SpaceBox</Filter>
+    </Image>
+    <Image Include="Images\SpaceBox\4.png">
+      <Filter>Resourcce Files\SpaceBox</Filter>
+    </Image>
+    <Image Include="Images\SpaceBox\5.png">
+      <Filter>Resourcce Files\SpaceBox</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Project1.rc">
+      <Filter>Resourcce Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

@@ -122,7 +122,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);IS_DEBUG=true;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir);App;ChiliTools;Render;Shader;Render/Drawable;Render/Bindable;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -143,7 +143,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);IS_DEBUG=false;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir);App;ChiliTools;Render;Shader;Render/Drawable;Render/Bindable;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -170,6 +170,8 @@
     <ClCompile Include="ChiliTools/WindowsMessageMap.cpp" />
     <ClCompile Include="App/WinMain.cpp" />
     <ClCompile Include="ChiliTools\DxgiInfoManager.cpp" />
+    <ClCompile Include="ChiliTools\GDIPlusManager.cpp" />
+    <ClCompile Include="ChiliTools\Surface.cpp" />
     <ClCompile Include="Render/Graphics.cpp" />
     <ClCompile Include="Render\Bindable\Bindable.cpp" />
     <ClCompile Include="Render\Bindable\IndexBuffer.cpp" />
@@ -196,7 +198,9 @@
     <ClInclude Include="ChiliTools\ChiliMath.h" />
     <ClInclude Include="ChiliTools\ChiliWRL.h" />
     <ClInclude Include="ChiliTools\DxgiInfoManager.h" />
+    <ClInclude Include="ChiliTools\GDIPlusManager.h" />
     <ClInclude Include="ChiliTools\GraphicsThrowMacros.h" />
+    <ClInclude Include="ChiliTools\Surface.h" />
     <ClInclude Include="ChiliTools\WindowsThrowMacros.h" />
     <ClInclude Include="Render/Graphics.h" />
     <ClInclude Include="Render\Bindable\Bindable.h" />
@@ -227,6 +231,19 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="chili.ico" />
+    <Image Include="Images\brickwall.jpg" />
+    <Image Include="Images\brickwall_normal.jpg" />
+    <Image Include="Images\brickwall_normal_obj.png" />
+    <Image Include="Images\cube.png" />
+    <Image Include="Images\kappa50.png" />
+    <Image Include="Images\reference_nrm.png" />
+    <Image Include="Images\SpaceBox\0.png" />
+    <Image Include="Images\SpaceBox\1.png" />
+    <Image Include="Images\SpaceBox\2.png" />
+    <Image Include="Images\SpaceBox\3.png" />
+    <Image Include="Images\SpaceBox\4.png" />
+    <Image Include="Images\SpaceBox\5.png" />
+    <Image Include="Images\stripes.png" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ColorBlendPS.hlsl">
