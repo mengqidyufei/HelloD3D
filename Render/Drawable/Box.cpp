@@ -8,6 +8,8 @@
 #include "VertexBuffer.h"
 #include "VertexShader.h"
 #include "GraphicsThrowMacros.h"
+#include "Sphere.h"
+#include "Cube.h"
 
 Box::Box(Graphics& gfx,
 	std::mt19937& rng,
@@ -27,29 +29,18 @@ Box::Box(Graphics& gfx,
 	theta(adist(rng)),
 	phi(adist(rng))
 {
+	namespace dx = DirectX;
 	if (false == IsStaticInitialized())
 	{
 		struct Vertex
 		{
-			struct
-			{
-				float x;
-				float y;
-				float z;
-			} pos;
+			dx::XMFLOAT3 pos;
 		};
-		const std::vector<Vertex> vertices =
-		{
-			{ -1.0f,-1.0f,-1.0f },
-			{ 1.0f,-1.0f,-1.0f },
-			{ -1.0f,1.0f,-1.0f },
-			{ 1.0f,1.0f,-1.0f },
-			{ -1.0f,-1.0f,1.0f },
-			{ 1.0f,-1.0f,1.0f },
-			{ -1.0f,1.0f,1.0f },
-			{ 1.0f,1.0f,1.0f },
-		};
-		AddStaticBind(std::make_unique<VertexBuffer>(gfx, vertices));
+		IndexedTriangleList<Vertex> model = Cube::Make<Vertex>();
+		model.Transform(dx::XMMatrixScaling(1.0f, 1.0f, 1.2f));
+
+		AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
+		AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.indices));
 
 		auto pvs = std::make_unique<VertexShader>(gfx, L"VertexShader.cso");
 		auto pvsbc = pvs->GetBytecode();
@@ -57,16 +48,6 @@ Box::Box(Graphics& gfx,
 
 		AddStaticBind(std::make_unique<PixelShader>(gfx, L"PixelShader.cso"));
 
-		const std::vector<unsigned short> indices =
-		{
-			0,2,1, 2,3,1,
-			1,3,5, 3,7,5,
-			2,6,3, 3,6,7,
-			4,5,7, 4,7,6,
-			0,4,2, 2,4,6,
-			0,1,4, 1,5,4
-		};
-		AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, indices));
 
 		struct ConstantBuffer2
 		{

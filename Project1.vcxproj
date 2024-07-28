@@ -183,6 +183,7 @@
     <ClInclude Include="ChiliTools/Mouse.h" />
     <ClInclude Include="App/Window.h" />
     <ClInclude Include="ChiliTools/WindowsMessageMap.h" />
+    <ClInclude Include="ChiliTools\ChiliMath.h" />
     <ClInclude Include="ChiliTools\ChiliWRL.h" />
     <ClInclude Include="ChiliTools\DxgiInfoManager.h" />
     <ClInclude Include="ChiliTools\GraphicsThrowMacros.h" />
@@ -198,8 +199,14 @@
     <ClInclude Include="Render\Bindable\VertexBuffer.h" />
     <ClInclude Include="Render\Bindable\VertexShader.h" />
     <ClInclude Include="Render\Drawable\Box.h" />
+    <ClInclude Include="Render\Drawable\Cone.h" />
+    <ClInclude Include="Render\Drawable\Cube.h" />
     <ClInclude Include="Render\Drawable\Drawable.h" />
     <ClInclude Include="Render\Drawable\DrawableBase.h" />
+    <ClInclude Include="Render\Drawable\IndexedTriangleList.h" />
+    <ClInclude Include="Render\Drawable\Plane.h" />
+    <ClInclude Include="Render\Drawable\Prism.h" />
+    <ClInclude Include="Render\Drawable\Sphere.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
