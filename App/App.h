@@ -25,6 +25,7 @@ private:
 private:
 	Window mWnd;
 	ChiliTimer mTimer;
-	std::vector<std::unique_ptr<class Box>> mBoxs;
+	std::vector<std::unique_ptr<class Drawable>> mDrawables;
+	static constexpr size_t nDrawables = 180;
 };
 

@@ -9,10 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Shader">
       <UniqueIdentifier>{06ec312b-4a94-4452-92f3-a70b93a276d0}</UniqueIdentifier>
     </Filter>
@@ -21,6 +17,10 @@
     </Filter>
     <Filter Include="Header Files\Drawable">
       <UniqueIdentifier>{c8a95339-2e9d-4f2d-87f4-6607c9b18c67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +82,12 @@
       <Filter>Header Files\Bindable</Filter>
     </ClCompile>
     <ClCompile Include="Render\Drawable\Box.cpp">
+      <Filter>Header Files\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\Drawable\Melon.cpp">
+      <Filter>Header Files\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\Drawable\Pyramid.cpp">
       <Filter>Header Files\Drawable</Filter>
     </ClCompile>
   </ItemGroup>
@@ -185,22 +191,37 @@
     <ClInclude Include="ChiliTools\ChiliMath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Render\Drawable\Melon.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\Drawable\Pyramid.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\Bindable\BindableDef.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project1.rc">
-      <Filter>Resource Files</Filter>
+      <Filter>Shader\Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="chili.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Shader\Resource Files</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shader\VertexShader.hlsl">
+    <FxCompile Include="Shader\ColorBlendPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\PixelShader.hlsl">
+    <FxCompile Include="Shader\ColorBlendVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\ColorIndexPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\ColorIndexVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>
