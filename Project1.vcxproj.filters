@@ -119,6 +119,9 @@
     <ClCompile Include="Render\Bindable\Texture.cpp">
       <Filter>Source Files\Bindable</Filter>
     </ClCompile>
+    <ClCompile Include="Render\Drawable\SkinnedBox.cpp">
+      <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChiliTools/WindowsMessageMap.h">
@@ -243,6 +246,9 @@
     </ClInclude>
     <ClInclude Include="Render\Bindable\Texture.h">
       <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\Drawable\SkinnedBox.h">
+      <Filter>Header Files\Drawable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

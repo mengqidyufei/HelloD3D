@@ -188,6 +188,7 @@
     <ClCompile Include="Render\Drawable\Melon.cpp" />
     <ClCompile Include="Render\Drawable\Pyramid.cpp" />
     <ClCompile Include="Render\Drawable\Sheet.cpp" />
+    <ClCompile Include="Render\Drawable\SkinnedBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App/App.h" />
@@ -229,6 +230,7 @@
     <ClInclude Include="Render\Drawable\Prism.h" />
     <ClInclude Include="Render\Drawable\Pyramid.h" />
     <ClInclude Include="Render\Drawable\Sheet.h" />
+    <ClInclude Include="Render\Drawable\SkinnedBox.h" />
     <ClInclude Include="Render\Drawable\Sphere.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
