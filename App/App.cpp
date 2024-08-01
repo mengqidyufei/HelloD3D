@@ -9,6 +9,9 @@
 #include "GDIPlusManager.h"
 #include "Sheet.h"
 #include "SkinnedBox.h"
+#include "imgui.h"
+#include "imgui_impl_dx11.h"
+#include "imgui_impl_win32.h"
 
 GDIPlusManager gdipm;
 
@@ -96,12 +99,28 @@ App::~App()
 
 void App::doFrame()
 {
-	auto dt = mTimer.Mark();
-	mWnd.getGraphics().clearRenderTargetView(0.07f, 0.0f, 0.12f);
+	auto dt = mTimer.Mark() * speed_factor;
+	mWnd.getGraphics().beginFrame(0.07f, 0.0f, 0.12f);
 	for (auto& b : mDrawables)
 	{
 		b->Update(mWnd.mKeyboard.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
 		b->Draw(mWnd.getGraphics());
 	}
+
+	{
+		//static bool showDemoWindow = (true && mWnd.getGraphics().IsImguiEnabled());
+		//if (showDemoWindow)
+		//	ImGui::ShowDemoWindow(&showDemoWindow);
+		if (ImGui::Begin("Simulation Speed"))
+		{
+			ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 4.0f);
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			//static char buffer[1024];
+			//ImGui::InputText("Butts", buffer, sizeof(buffer));
+			ImGui::Text("Status: %s", mWnd.mKeyboard.KeyIsPressed(VK_SPACE) ? "PAUSED" : "RUNNING");
+		}
+		ImGui::End();
+	}
+
 	mWnd.getGraphics().endFrame();
 }

@@ -12,12 +12,18 @@ public:
 	~Graphics();
 
 	void endFrame();	// 将后缓冲区画面翻转给前缓冲区
-	void clearRenderTargetView(float red, float green, float blue) noexcept;
+	void beginFrame(float red, float green, float blue) noexcept;
 
 	void DrawIndexed(UINT count);
 	void SetProjection(DirectX::FXMMATRIX proj) noexcept;
 	DirectX::XMMATRIX GetProjection() const noexcept;
+
+	void EnableImgui() noexcept;
+	void DisableImgui() noexcept;
+	bool IsImguiEnabled() const noexcept;
+
 private:
+	bool mEnableImGui = true;
 	DirectX::XMMATRIX projection;
 
 private:

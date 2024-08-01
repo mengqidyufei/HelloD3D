@@ -1,5 +1,7 @@
 ﻿#include "Graphics.h"
 #include "ChiliException.h"
+#include "imgui_impl_dx11.h"
+#include "imgui/imgui_impl_win32.h"
 #include <cmath>
 
 Graphics::Graphics(HWND hWnd)
@@ -93,18 +95,31 @@ Graphics::Graphics(HWND hWnd)
 	vp.TopLeftX = 0.0f;
 	vp.TopLeftY = 0.0f;
 	mContext->RSSetViewports(1u, &vp);
+
+	ImGui_ImplDX11_Init(mDevice.Get(), mContext.Get());
 }
 
 Graphics::~Graphics()
 {
+	ImGui_ImplDX11_Shutdown();
 }
 
 void Graphics::endFrame()
 {
-	HRESULT hr = mSwapChain->Present(1, 0);
+	if (IsImguiEnabled())
+	{
+		ImGui::Render();
+		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+		ImGui::EndFrame();
+	}
+	HRESULT hr;
+#ifndef NDEBUG
+	infoManager.Set();
+#endif
+	hr = mSwapChain->Present(1, 0);
 	if (hr != 0)
 	{
-		infoManager.reset();
+		infoManager.Set();
 		if (hr == DXGI_ERROR_DEVICE_REMOVED)
 		{
 			throw GFX_DEVICE_REMOVED_EXCEPT(mDevice->GetDeviceRemovedReason());
@@ -116,9 +131,17 @@ void Graphics::endFrame()
 	}
 }
 
-void Graphics::clearRenderTargetView(float red, float green, float blue) noexcept
+void Graphics::beginFrame(float red, float green, float blue) noexcept
 {
+	if (IsImguiEnabled())
+	{
+		ImGui_ImplDX11_NewFrame();
+		ImGui_ImplWin32_NewFrame();
+		ImGui::NewFrame();
+	}
+
 	// bind depth stensil view to OM
+	// because DXGI_SWAP_EFFECT_FLIP_DISCARD, every frame swap
 	mContext->OMSetRenderTargets(1u, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
 
 	const float color[] = { red,green,blue,1.0f };
@@ -128,7 +151,8 @@ void Graphics::clearRenderTargetView(float red, float green, float blue) noexcep
 
 void Graphics::DrawIndexed(UINT count)
 {
-	GFX_THROW_INFO_ONLY(mContext->DrawIndexed(count, 0u, 0u));
+	//GFX_THROW_INFO_ONLY(mContext->DrawIndexed(count, 0u, 0u));
+	mContext->DrawIndexed(count, 0u, 0u);
 }
 
 void Graphics::SetProjection(DirectX::FXMMATRIX proj) noexcept
@@ -139,4 +163,19 @@ void Graphics::SetProjection(DirectX::FXMMATRIX proj) noexcept
 DirectX::XMMATRIX Graphics::GetProjection() const noexcept
 {
 	return projection;
+}
+
+void Graphics::EnableImgui() noexcept
+{
+	mEnableImGui = true;
+}
+
+void Graphics::DisableImgui() noexcept
+{
+	mEnableImGui = false;
+}
+
+bool Graphics::IsImguiEnabled() const noexcept
+{
+	return mEnableImGui;
 }

@@ -4,6 +4,7 @@
 #include "resource.h"
 #include <ostream>
 #include <sstream>
+#include "imgui_impl_win32.h"
 
 Window::Window(int width, int height, LPCWSTR name)
 	: mWidth(width)
@@ -32,12 +33,14 @@ Window::Window(int width, int height, LPCWSTR name)
 	{
 		throw CHWND_LAST_EXCEPT();
 	}
+	ImGui_ImplWin32_Init(mWnd);
 	ShowWindow(mWnd, SW_SHOWDEFAULT);
 	mGraphics = std::make_unique<Graphics>(mWnd);
 }
 
 Window::~Window()
 {
+	ImGui_ImplWin32_Shutdown();
 	DestroyWindow(mWnd);
 }
 
@@ -133,9 +136,14 @@ LRESULT WINAPI Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 // 真正处理消息的函数：
 LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+	{
+		return true;
+	}
 	static WindowsMessageMap map;
 	std::string msgString = map(msg, lParam, wParam);
 	//OutputDebugStringA(msgString.c_str());
+	ImGuiIO& io = ImGui::GetIO();
 	switch (msg)
 	{
 	case WM_CLOSE:
@@ -147,6 +155,8 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		mKeyboard.ClearState();		// 当弹窗后，键盘焦点不在主窗口就清空键盘所有状态
 		break;
 	case WM_KEYDOWN:
+		if (io.WantCaptureKeyboard)
+			break;
 		// Alt key is WM_SYSKEYDOWN / WM_SYSKEYUP
 		// 0x4000-0000: MSDN上查WM_KEYDOWN的lParam解释，处理持续按下某个键后，只有第30位可变化，比如加速前进Shift+W
 		if (!(lParam & 0x40000000) || mKeyboard.AutorepeatIsEnabled())
@@ -155,13 +165,19 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		}
 		break;
 	case WM_KEYUP:
+		if (io.WantCaptureKeyboard)
+			break;
 		mKeyboard.OnKeyReleased(static_cast<unsigned char>(wParam));
 		break;
 	case WM_CHAR:
+		if (io.WantCaptureKeyboard)
+			break;
 		mKeyboard.OnChar(static_cast<unsigned char>(wParam));
 		break;
 	case WM_MOUSEMOVE:
 	{
+		if (io.WantCaptureMouse)
+			break;
 		POINTS pt = MAKEPOINTS(lParam);
 		if (pt.x >= 0 && pt.x < mWidth && pt.y >= 0 && pt.y < mHeight)
 		{
@@ -188,30 +204,41 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	break;
 	case WM_LBUTTONDOWN:
 	{
+		SetForegroundWindow(hWnd);
+		if (io.WantCaptureMouse)
+			break;
 		POINTS pt = MAKEPOINTS(lParam);
 		mMouse.OnLeftPressed(pt.x, pt.y);
 	}
 	break;
 	case WM_RBUTTONDOWN:
 	{
+		if (io.WantCaptureMouse)
+			break;
 		POINTS pt = MAKEPOINTS(lParam);
 		mMouse.OnRightPressed(pt.x, pt.y);
 	}
 	break;
 	case WM_LBUTTONUP:
 	{
+		if (io.WantCaptureMouse)
+			break;
 		POINTS pt = MAKEPOINTS(lParam);
 		mMouse.OnLeftReleased(pt.x, pt.y);
 	}
 	break;
 	case WM_RBUTTONUP:
 	{
+		if (io.WantCaptureMouse)
+			break;
 		POINTS pt = MAKEPOINTS(lParam);
 		mMouse.OnRightReleased(pt.x, pt.y);
 	}
 	break;
 	case WM_MOUSEWHEEL:
 	{
+		if (io.WantCaptureMouse)
+			break;
 		POINTS pt = MAKEPOINTS(lParam);
 		mMouse.OnWheelDelta(pt.x, pt.y, GET_WHEEL_DELTA_WPARAM(wParam));
 	}

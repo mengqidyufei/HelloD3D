@@ -125,7 +125,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);IS_DEBUG=true;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir);App;ChiliTools;Render;Shader;Render/Drawable;Render/Bindable;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);App;ChiliTools;Render;Shader;Render/Drawable;Render/Bindable;imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -146,7 +146,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);IS_DEBUG=false;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir);App;ChiliTools;Render;Shader;Render/Drawable;Render/Bindable;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);App;ChiliTools;Render;Shader;Render/Drawable;Render/Bindable;imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -162,6 +162,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App/App.cpp" />
+    <ClCompile Include="App\ImGuiManager.cpp" />
     <ClCompile Include="ChiliTools/ChiliException.cpp" />
     <ClCompile Include="ChiliTools/ChiliTimer.cpp" />
     <ClCompile Include="ChiliTools/Keyboard.cpp" />
@@ -172,6 +173,12 @@
     <ClCompile Include="ChiliTools\DxgiInfoManager.cpp" />
     <ClCompile Include="ChiliTools\GDIPlusManager.cpp" />
     <ClCompile Include="ChiliTools\Surface.cpp" />
+    <ClCompile Include="imgui\imgui.cpp" />
+    <ClCompile Include="imgui\imgui_demo.cpp" />
+    <ClCompile Include="imgui\imgui_draw.cpp" />
+    <ClCompile Include="imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="Render/Graphics.cpp" />
     <ClCompile Include="Render\Bindable\Bindable.cpp" />
     <ClCompile Include="Render\Bindable\IndexBuffer.cpp" />
@@ -192,6 +199,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App/App.h" />
+    <ClInclude Include="App\ImGuiManager.h" />
     <ClInclude Include="ChiliTools/ChiliException.h" />
     <ClInclude Include="ChiliTools/ChiliTimer.h" />
     <ClInclude Include="ChiliTools/ChiliWin.h" />
@@ -206,6 +214,14 @@
     <ClInclude Include="ChiliTools\GraphicsThrowMacros.h" />
     <ClInclude Include="ChiliTools\Surface.h" />
     <ClInclude Include="ChiliTools\WindowsThrowMacros.h" />
+    <ClInclude Include="imgui\imconfig.h" />
+    <ClInclude Include="imgui\imgui.h" />
+    <ClInclude Include="imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="imgui\imgui_impl_win32.h" />
+    <ClInclude Include="imgui\imgui_internal.h" />
+    <ClInclude Include="imgui\imstb_rectpack.h" />
+    <ClInclude Include="imgui\imstb_textedit.h" />
+    <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="Render/Graphics.h" />
     <ClInclude Include="Render\Bindable\Bindable.h" />
     <ClInclude Include="Render\Bindable\BindableDef.h" />

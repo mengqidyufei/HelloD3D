@@ -1,0 +1,38 @@
+ImGui 用户界面库，即时模式，OpenGL，Vulkan，DirectX
+imgui_impl_win32: 键盘、鼠标
+imgui_impl_dx11: GUI实际实现
+
+创建：
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui::StyleColorsDark();
+    ImGui_ImplWin32_Init(hwnd);
+    ImGui_ImplDX11_Init(d3dDevice, d3dDeviceContext);
+析构：
+	ImGui_ImplDX11_Shutdown();
+    ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
+渲染：
+while(true)
+{
+    ImGui_ImplDX11_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+    bool show_demo_window = true;
+    if (show_demo_window)
+        ImGui::ShowDemoWindow(&show_demo_window);
+    {
+    	ImGui::Begin();
+    	ImGui::Text("Hello ImGui");
+    	ImGui::End();
+    }
+    ImGui::Render();
+    d3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, nullptr);
+    d3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, clear_color_with_alpha);
+    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());		// 将imgui内部格式转换到dx11平台上，当然也支持用其他API转换到其他平台
+    d3dSwapChain->Present(1, 0);
+}
+
+
+获取帧率：ImGui::GetIO().Framerate
+过滤鼠标键盘，也需要用到ImGui::GetIO()
