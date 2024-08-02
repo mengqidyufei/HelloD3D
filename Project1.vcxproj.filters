@@ -146,6 +146,9 @@
     <ClCompile Include="App\ImGuiManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Render\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChiliTools/WindowsMessageMap.h">
@@ -299,6 +302,9 @@
       <Filter>ImGui</Filter>
     </ClInclude>
     <ClInclude Include="App\ImGuiManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

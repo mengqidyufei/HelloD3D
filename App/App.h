@@ -2,6 +2,7 @@
 #include "Window.h"
 #include "ChiliTimer.h"
 #include "ImGuiManager.h"
+#include "Camera.h"
 
 /*!
 * Application:
@@ -27,6 +28,7 @@ private:
 	ImGuiManager mImGui;
 	Window mWnd;
 	ChiliTimer mTimer;
+	Camera mCamera;
 	std::vector<std::unique_ptr<class Drawable>> mDrawables;
 	static constexpr size_t nDrawables = 180;
 	float speed_factor = 1.0f;

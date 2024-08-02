@@ -80,7 +80,6 @@ App::App()
 	const auto s = Surface::FromFile("Images\\kappa50.png");
 
 	mWnd.getGraphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));	// Í¶Ó°¾ØÕó
-	mWnd.getGraphics().SetCamera(DirectX::XMMatrixTranslation(0.0f, 0.0f, 20.0f));	// ÉãÏñ»úÊÓÍ¼¾ØÕó
 }
 
 int App::init()
@@ -102,6 +101,8 @@ void App::doFrame()
 {
 	auto dt = mTimer.Mark() * speed_factor;
 	mWnd.getGraphics().beginFrame(0.07f, 0.0f, 0.12f);
+
+	mWnd.getGraphics().SetCamera(mCamera.GetMatrix());	// ÉãÏñ»úÊÓÍ¼¾ØÕó
 	for (auto& b : mDrawables)
 	{
 		b->Update(mWnd.mKeyboard.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
@@ -121,6 +122,7 @@ void App::doFrame()
 			ImGui::Text("Status: %s", mWnd.mKeyboard.KeyIsPressed(VK_SPACE) ? "PAUSED" : "RUNNING");
 		}
 		ImGui::End();
+		mCamera.SpawnControlWindow();
 	}
 
 	mWnd.getGraphics().endFrame();
