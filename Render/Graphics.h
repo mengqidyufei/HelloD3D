@@ -17,6 +17,8 @@ public:
 	void DrawIndexed(UINT count);
 	void SetProjection(DirectX::FXMMATRIX proj) noexcept;
 	DirectX::XMMATRIX GetProjection() const noexcept;
+	void SetCamera(DirectX::FXMMATRIX camera) noexcept;
+	DirectX::XMMATRIX GetCamera() const noexcept;
 
 	void EnableImgui() noexcept;
 	void DisableImgui() noexcept;
@@ -24,7 +26,8 @@ public:
 
 private:
 	bool mEnableImGui = true;
-	DirectX::XMMATRIX projection;
+	DirectX::XMMATRIX mProjection;		// 投影矩阵
+	DirectX::XMMATRIX mCamera;			// 摄像机视图矩阵
 
 private:
 	wrl::ComPtr<ID3D11Device> mDevice;

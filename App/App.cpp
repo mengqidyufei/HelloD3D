@@ -79,7 +79,8 @@ App::App()
 	
 	const auto s = Surface::FromFile("Images\\kappa50.png");
 
-	mWnd.getGraphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
+	mWnd.getGraphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));	// 投影矩阵
+	mWnd.getGraphics().SetCamera(DirectX::XMMatrixTranslation(0.0f, 0.0f, 20.0f));	// 摄像机视图矩阵
 }
 
 int App::init()

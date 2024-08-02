@@ -157,12 +157,22 @@ void Graphics::DrawIndexed(UINT count)
 
 void Graphics::SetProjection(DirectX::FXMMATRIX proj) noexcept
 {
-	projection = proj;
+	mProjection = proj;
 }
 
 DirectX::XMMATRIX Graphics::GetProjection() const noexcept
 {
-	return projection;
+	return mProjection;
+}
+
+void Graphics::SetCamera(DirectX::FXMMATRIX camera) noexcept
+{
+	mCamera = camera;
+}
+
+DirectX::XMMATRIX Graphics::GetCamera() const noexcept
+{
+	return mCamera;
 }
 
 void Graphics::EnableImgui() noexcept
